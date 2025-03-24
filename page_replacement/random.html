@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAGE REPLACEMENT ALGORITHM</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="disk.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-teal: #3AAFA9;
+            --color-mint: #B2EBE0;
+            --color-cream: #FDFAF6;
+            --color-amber: #FF9F1C;
+            --color-dark: #2B4141;
+            --color-light: #F7F7F7;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-cream);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo:before {
+            content: "\f233";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            font-weight: 900;
+        }
+        
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        .button {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 230px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            z-index: 1000;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: var(--color-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-mint);
+            color: var(--color-dark);
+            padding-left: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.6rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+            border-radius: 2px;
+        }
+
+        .content {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .image-container {
+            flex: 1;
+            position: relative;
+            min-height: 100%;
+            background-color: var(--color-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .text-container {
+            flex: 1.5;
+            padding: 40px;
+            text-align: left;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        b {
+            color: var(--color-teal);
+            font-weight: 600;
+        }
+
+        h3 {
+            color: var(--color-teal);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h3:before {
+            content: "";
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: var(--color-amber);
+            margin-right: 12px;
+            border-radius: 50%;
+        }
+
+        .bullet-points {
+            list-style: none;
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+
+        .bullet-points li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .bullet-points li:before {
+            content: "\f105";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--color-amber);
+        }
+
+        .sim-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .sim-button:before {
+            content: "\f04b";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 10px;
+        }
+
+        .sim-button:hover {
+            background: linear-gradient(135deg, var(--color-amber), #F57C00);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card {
+            background-color: var(--color-light);
+            border-left: 4px solid var(--color-teal);
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .image-container {
+                padding: 20px;
+                min-height: 200px;
+            }
+            
+            .text-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="../index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = '../index.html';" class="button"><i class="fas fa-home"></i> Home</button></li>
+            <li class="dropdown">
+                <button class="button"><i class="fas fa-code-branch"></i> Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="../process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+                    <a href="../process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+                    <a href="../Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+                    <a href="../mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+                    <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="../file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = '../about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+            <li><button class="button" onclick="location.href = '../references.html';"><i class="fas fa-book"></i> References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Random Page Replacement</h1>
+
+        <div class="content">
+            <div class="image-container">
+                <img src="../images/lru.png" alt="LRU Page Replacement Illustration">
+            </div>
+            <div class="text-container">
+                <div class="info-card">
+                    <p>
+                        The <b>Random Page Replacement (RANDOM)</b> algorithm is a page replacement strategy that selects a page at random to replace when a page fault occurs and all frames are full. It does not rely on any access history or usage patterns, instead randomly choosing which page to evict.
+                    </p>
+                </div>
+
+                <h3>How It Works</h3>
+                <p>
+                    In the RANDOM algorithm, when a page fault occurs, the algorithm randomly picks one of the pages currently in memory to replace with the new page. The decision is entirely based on chance, with no consideration for which page was accessed most recently or how frequently pages have been used.
+                </p>
+
+                <h3>Advantages</h3>
+                <ul class="bullet-points">
+                    <li>Extremely simple to implement, as no complex data structures or algorithms are required.</li>
+                    <li>Efficient in terms of implementation time and overhead.</li>
+                    <li>Can perform reasonably well in certain cases, especially when there is no clear pattern to page access.</li>
+                    <li>Does not require tracking of page usage, reducing operational complexity</li>
+                </ul>
+
+                <h3>Disadvantages</h3>
+                <ul class="bullet-points">
+                    <li>Highly unpredictable, making performance difficult to analyze and optimize.</li>
+                    <li>Can perform poorly in scenarios where certain pages are accessed frequently, leading to unnecessary evictions.</li>
+                    <li>Not efficient in cases where access patterns can be leveraged (e.g., for better performance with LRU or FIFO)</li>
+                    <li>Lacks any strategy to minimize the number of page faults, often leading to a high fault rate</li>
+                </ul>
+
+                <button class="sim-button" onclick="location.href='page_replacement.html';">Try Random Simulation</button>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: var(--color-dark); color: white; text-align: center; padding: 20px 0; margin-top: 50px;">
+        <p style="margin: 0;">© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
+    </footer>
+</body>
+</html>
