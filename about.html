@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - OS VISUALIZER</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-teal: #3AAFA9;
+            --color-mint: #B2EBE0;
+            --color-cream: #FDFAF6;
+            --color-amber: #FF9F1C;
+            --color-dark: #2B4141;
+            --color-light: #F7F7F7;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-cream);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo:before {
+            content: "\f233";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            font-weight: 900;
+        }
+        
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        .button {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 220px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            z-index: 1000;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: var(--color-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-mint);
+            color: var(--color-dark);
+            padding-left: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.6rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--color-dark);
+            font-size: 2rem;
+            margin: 40px 0 20px;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+        }
+
+        .project-description {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .project-description p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-header {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--color-mint);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--color-dark);
+            border: 3px solid white;
+        }
+
+        .member-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .member-id {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .member-details {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            color: var(--color-dark);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 8px 0;
+        }
+
+        .contact-link i {
+            margin-right: 10px;
+            width: 20px;
+            color: var(--color-teal);
+        }
+
+        .contact-link:hover {
+            color: var(--color-teal);
+            transform: translateX(5px);
+        }
+
+        footer {
+            background: var(--color-dark);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav li {
+                margin: 5px;
+            }
+
+            .project-description {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = 'index.html';" class="button"><i class="fas fa-home"></i> Home</button></li>
+            <li class="dropdown">
+                <button class="button"><i class="fas fa-code-branch"></i> Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+                    <a href="process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+                    <a href="Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+                    <a href="mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+                    <a href="page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+                    <a href="Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+                    <a href="system_calls/system_calls.html"><i class="fas fa-phone-alt"></i> System Calls</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = 'about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+            <li><button class="button" onclick="location.href = 'references.html';"><i class="fas fa-book"></i> References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>About OS Visualizer</h1>
+
+        <div class="project-description">
+            <p>
+                <strong>OS Visualizer</strong> is an educational tool designed to help students understand complex operating system concepts through interactive visualizations. Our platform offers simulations of various algorithms used in operating systems, making abstract concepts more tangible and easier to comprehend.
+            </p>
+            <p>
+                This project was developed as part of our Operating Systems course to provide a hands-on learning experience for students. By visualizing algorithms like process scheduling, memory management, and disk scheduling, we aim to bridge the gap between theoretical knowledge and practical understanding.
+            </p>
+        </div>
+
+        <!-- REMOVE THE LINKED IN MAYBE LATER -->
+        <h2>Our Team</h2>
+        <div class="team-grid">
+            <!-- Team Member 1 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SADIPIRALA BASITHA</h3>
+                    <p class="member-id">231CS251</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:basithasadipirala.231cs251@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            basithasadipirala.231cs251@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/basitha" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/basitha
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SAHIL KUMAR</h3>
+                    <p class="member-id">231CS252</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:sahilkumar.231cs252@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            sahilkumar.231cs252@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/sahilkumar" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/sahilkumar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SAKSHAM PARMAR</h3>
+                    <p class="member-id">231CS253</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:sakshamparmar.231cs253@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            sakshamparmar.231cs253@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/sakshamparmar" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/sakshamparmar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 4 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SAMVED SAJANKILA</h3>
+                    <p class="member-id">231CS254</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:samvedsajankila.231cs254@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            samvedsajankila.231cs254@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/samvedsajankila" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/samvedsajankila
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 5 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SHREYA PRADHAN</h3>
+                    <p class="member-id">231CS255</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:shreyapradhan.231cs255@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            shreyapradhan.231cs255@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/shreyapradhan" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/shreyapradhan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 6 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SK SHARHAAN NAIM</h3>
+                    <p class="member-id">231CS256</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:sksharhaannaim.231cs256@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            sksharhaannaim.231cs256@nitk.edu.in
+                        </a>
+                        <a href="https://www.linkedin.com/in/sk-sharhaan-naim/" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/sk-sharhaan-naim/
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 7 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SRAVANTHI M</h3>
+                    <p class="member-id">231CS257</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:sravanthim.231cs257@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            sravanthim.231cs257@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/sravanthim" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/sravanthim
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 8 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SRISHTI KUMARI</h3>
+                    <p class="member-id">231CS258</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:srishtikumari.231cs258@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            srishtikumari.231cs258@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/srishtikumari" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/srishtikumari
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 9 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">SUHANI VAIDYA</h3>
+                    <p class="member-id">231CS259</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:suhanivaidya.231cs259@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            suhanivaidya.231cs259@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/suhanivaidya" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/suhanivaidya
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 10 -->
+            <div class="team-card">
+                <div class="member-header">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">TUNGENA SAI NISHNATH RAO</h3>
+                    <p class="member-id">231CS260</p>
+                </div>
+                <div class="member-details">
+                    <div class="contact-links">
+                        <a href="mailto:tungenasainishnathrao.231cs260@nitk.edu.in" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            tungenasainishnathrao.231cs260@nitk.edu.in
+                        </a>
+                        <a href="https://linkedin.com/in/nishnathrao" target="_blank" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            linkedin.com/in/nishnathrao
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
+    </footer>
+</body>
+</html>
