@@ -1,336 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Replacement Visualization</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <title>PAGE REPLACEMENT ALGORITHM</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="disk.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-teal: #3AAFA9;
+            --color-mint: #B2EBE0;
+            --color-cream: #FDFAF6;
+            --color-amber: #FF9F1C;
+            --color-dark: #2B4141;
+            --color-light: #F7F7F7;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-cream);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo:before {
+            content: "\f233";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            font-weight: 900;
+        }
+        
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        .nav-button {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:active {
+            transform: translateY(1px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 230px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            z-index: 1000;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: var(--color-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-mint);
+            color: var(--color-dark);
+            padding-left: 25px;
+        }
+        .dropdown::after{
+            content: '';
+            position: absolute;
+            height: 13px;
+            width: 100%;
+            bottom: -10px;
+            left: 0;
+        }
+        .container {
+            max-width: 70%;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.6rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+            border-radius: 2px;
+        }
+
+        .content, .second {
+            display:flex;
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-top: 40px;
+            padding: 15px 10px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        b {
+            color: var(--color-teal);
+            font-weight: 600;
+        }  
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+ /* Adds space between buttons */
+            width: 200px; /* Make sure the container spans the full width */
+            align-items: center; /* Center the buttons horizontally */
+        }
+        .sim-button {
+            margin-top: 20px;
+            border: none;
+            color: white;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: block;
+            align-items: center;
+            width: 200px;
+        }
+
+        .sim-button:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        #btn1, #btn2, #btn3{
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+        }
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            .text-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+    </style>
 </head>
-<style>
-
-    * {
-        box-sizing: border-box;
-        border-color:#00FEFE;
-    }
-    body{
-        background-color: #0f0d0e;
-        color: #00FEFE;
-    }
-
-    .body_name{
-        background-color: #0f0f0f;
-    }
-
-    .column1 {
-        float: left;
-        width: 30%;
-        padding: 15px;
-        margin: 10px;
-        background-color: #00FEFE;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    }
-
-    .column1:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    }
-
-    .column1 h2 {
-        color: black; /* Adjust text color */
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .column1 p {
-        color: black; /* Adjust text color */
-        margin: 0;
-    }
-
-
-
-    .butn {
-        margin-top: 2.2%;
-        height: 41px;
-        color: rgb(0, 254, 254);
-        background-color: #0f0d0e;
-        border: 3px solid rgb(0, 254, 254); 
-    }
-
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-    .row1 {
-        padding-right: 15px;
-        height: 24vh;
-        margin-bottom: 0%;
-    }
-
-    .body_name {
-        background-color: #0f0f0f;
-    }
-
-    .button {
-        color: #0f0d0e;
-        border: none;
-        font-size: 18px;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        margin: 0px 2px;
-        cursor: pointer;
-        transition-duration: 0.5s;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 550;
-    }
-
-    .button1 {
-        background-color: #0f0d0e;
-        color: white;
-        border-radius: 5px;
-        border: 2px solid rgb(0, 254, 254);
-    }
-
-    .button1:hover {
-        background-color: rgb(0, 254, 254);
-        color: #0f0d0e;
-    }
-
-    nav {
-        background-color: #0f0d0e;
-        height: 90px;
-        display: flex;
-        justify-content: space-between;
-        background: rgba(10, 4, 4, 0);
-        position: relative;
-    }
-
-    .logo {
-        border-radius: 12px;
-        margin: 15px;
-        margin-left: 4%;
-        padding: 18px 10px 2px 10px;
-        background: #231F20;
-        color: #f9f4da;
-        text-align: center;
-        font: 20px 'Outfit', sans-serif;
-        justify-content: center;
-        transition: 0.5s;
-        font-weight: bolder;
-        cursor: pointer;
-
-    }
-
-    .logo:hover {
-        color: rgb(0, 0, 0);
-        background-color: rgb(0, 255, 255);
-        text-decoration: none; 
-    }
-
-    .butn:hover {
-        color: rgb(0, 0, 0);
-        background-color: rgb(0, 255, 255);
-        text-decoration: none; 
-    }
-
-
-
-    ul {
-        list-style: none;
-        margin-right: 4%;
-        padding: 0;
-        display: flex;
-        justify-content: right;
-        align-items: center;
-        height: 100%;
-    }
-
-    li {
-        margin: 0 20px;
-
-    }
-
-    a {
-        color: white;
-        text-decoration: none;
-        font-size: 20px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    a:hover {
-        color: #00FEFE;
-        text-decoration: none;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        min-width: 135px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        background: rgba(2, 2, 0, 0.45);
-        border-radius: 5px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10.3px);
-        -webkit-backdrop-filter: blur(10.3px);
-
-    }
-
-    .dropdown-content a {
-        color: rgb(0, 254, 254);
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        border: none;
-        cursor: pointer;
-        transition-duration: 0.25s;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 550;
-        font-size: small;
-
-    }
-
-    .dropdown-content a:hover {
-        background-color: rgb(0, 254, 254);
-        color: #0f0d0e;
-        border-radius: 5px;
-    }
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .fun {
-        color: white;
-        padding-bottom: 23vh;
-        width: 100vw;
-        text-align: center;
-    }
-
-    .flex-container {
-        display: flex;
-        padding: 10px;
-    }
-    .heading{
-        text-align: center;
-    }
-
-    .flex-child {
-        flex: 0 0 auto;
-    }
-
-    .flex-child:first-child {
-        margin-right: 20px;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-top: 3rem;
-        padding: 20px;
-        font-size: 18px;
-    }
-
-    #tbl1{
-        color: #00FEFE;
-    }
-    #tbl2{
-        color: #00FEFE;
-    }
-    #tbl3{
-        color: #00FEFE;
-    }
-    #tbl4{
-        color: #00FEFE;
-    }
-    #tbl5{
-        color: #00FEFE;
-    }
-
-    .algorithm option {
-        background-color: black;
-        color: rgb(0,255,255);
-        font-size: 16px;
-    }
-
-    .first {
-        display: flex;
-        padding: 15px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #0f0d0e;
-        color: #00FEFE;
-    }
-
-    .second {
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 20px;
-        background-color: #030507;
-        color: #00FEFE;
-    }
-
-    .frmBtn {
-        width: 200px;
-        margin: 10px;
-    }
-
-    .summary {
-        background-color: #040608;
-
-    }
-
-    .table-bordered td,
-    .table-bordered th,
-    .table-bordered tr {
-        border-color: black !important;
-        border-width: 2px;
-    }
-</style>
-
 <body>
     <nav>
-        <a class="logo" href="../index.html"> OS VISUALIZER </a>
+        <a class="logo" href="../index.html">OS VISUALIZER</a>
         <ul>
-            <li><button onclick="location.href = '../index.html';" class="button button1">Home</button></li>
+            <li><button onclick="location.href = '../index.html';" class="nav-button"><i class="fas fa-home"></i> Home</button></li>
             <li class="dropdown">
-                <button class="button button1 dropbtn">Algorithms</button>
+                <button class="nav-button"><i class="fas fa-code-branch"></i> Algorithms</button>
                 <div class="dropdown-content">
-                    <a href="../process_scheduling/process.html">Process Scheduling</a>
-                    <a href="../process_sync\home.html">Process Synchronization</a>
-                    <a href="../Bankers/bankers.html">Bankers Algorithm</a>
-                    <a href="../mft_mvt/Fit.html">Fit Algorithms</a>
-                    <a href="../page_replacement/page_replacement_home.html">Page Replacement Algorithm</a>
-                    <a href="../Disk/disk.html">Disk Scheduling</a>
-                    <a href="../file_allocation/file.html">File Allocation</a>
-                    <a href="../mft_mvt/MVFT.html">MFT and MVT</a>
+                    <a href="../process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+                    <a href="../process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+                    <a href="../Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+                    <a href="../mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+                    <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="../file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
                 </div>
             </li>
-            <li><button class="button button1" onclick="location.href = '../about.html';">About</button></li>
-            <li><button class="button button1" onclick="location.href = '../references.html';">References</button></li>
+            <li><button class="nav-button" onclick="location.href = '../about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+            <li><button class="nav-button" onclick="location.href = '../references.html';"><i class="fas fa-book"></i> References</button></li>
         </ul>
     </nav>
     <div class="container">
-        <div class="first card border border-dark" style="border: 2px solid cyan;">
-            <div class="heading">
-                <h1>PAGE REPLACEMENT VISUALIZER</h1>
-            </div>
+        <h1>PAGE REPLACEMENT VISUALIZER</h1>
+        <div class="content">
             <div class= "flex-container">
                 <div class = "flex-child">
             Enter the Stream of Pages:
@@ -351,8 +321,9 @@
             </div>
                 </div>
             </div>
-            <label for="algo">Choose the Algorithm : </label>
-            <div class="algorithm">
+            <div class="flex-container">
+                <label for="algo">Choose the Algorithm : </label>
+                <div class="algorithm">
                 <select id="drop_down" name="algo" required>
                     <option value="" disabled selected>Select your option</option>
                     <option value="FIFO">First In First Out </option>
@@ -362,17 +333,20 @@
                     <option value="Random">Random</option>
                 </select>
             </div>
-            <div class="button">
-                <input id="btn1" style=background-color:#02b126="button" onclick="disableButton1(); showDiv(); visualize();"
-                    class="frmBtn btn btn-lg btn-block btn-success" value="VISUALIZE">
             </div>
-            <div class="button">
-                <input id="btn2" style="background-color: #ff0000"; type="button" onclick="enableButton1(); reset();"
-                    class="frmBtn btn btn-lg btn-block btn-danger" value="RESET">
-            </div>
-            <div class="button">
-                <input id="btn3" type="button" onclick="redirect();"
-                    class="frmBtn btn btn-lg btn-block btn-info" value="COMPARE">
+            <div class="button-container">
+                <div class="sim-button">
+                    <input id="btn1" style="background-color:#02b126"; type="button" onclick="disableButton1(); showDiv(); visualize();"
+                        class="frmBtn btn btn-lg btn-block btn-success" value="Visualize">
+                </div>
+                <div class="sim-button">
+                    <input id="btn2" style="background-color: #ff0000"; type="button" onclick="enableButton1(); reset();"
+                        class="frmBtn btn btn-lg btn-block btn-danger" value="Reset">
+                </div>
+                <div class="sim-button">
+                    <input id="btn3" type="button" onclick="redirect();"
+                        class="frmBtn btn btn-lg btn-block btn-info" value="Compare">
+                </div>
             </div>
 
         </div>
@@ -426,13 +400,13 @@
             var cell = row.insertCell(j);
 
             if (j == 0) {
-                cell.innerHTML = "<b><FONT COLOR=\"#00FEFE\">Page Sequence</b>";
+                cell.innerHTML = "<b><FONT COLOR=\"#2B4141\">Page Sequence</b>";
             }
             else if (j == (numberOfFrames + 1)) {
-                cell.innerHTML = "<b><FONT COLOR=\"#00FEFE\">Page Hit/Miss</b>";
+                cell.innerHTML = "<b><FONT COLOR=\"#2B4141\">Page Hit/Miss</b>";
             }
             else {
-                cell.innerHTML = `<b><FONT COLOR=\"#00FEFE\">Frame ${j}</b>`;
+                cell.innerHTML = `<b><FONT COLOR=\"#2B4141\">Frame ${j}</b>`;
             }
         }
 
@@ -468,28 +442,30 @@
 
                 row = table.insertRow((count) + 1);
                 cell = row.insertCell((k++));
-                cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + arr[m];
+                cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + arr[m];
                 count++;
 
                 for (let n = 0; n < numberOfFrames; n++) {
                     if (temp[n] != -1) {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + temp[n];
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + temp[n];
                     }
                     else {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\"> - ";
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\"> - ";
                     }
 
                 }
                 if (s == 0) {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Miss";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(255, 0, 0)";
                 }
                 else {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Hit";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(0, 255, 0)";
                 }
 
@@ -579,27 +555,29 @@
 
                 row = table.insertRow((count) + 1);
                 cell = row.insertCell((k++));
-                cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + arr[i];
+                cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + arr[i];
                 count++;
 
                 for (j = 0; j < numberOfFrames; ++j) {
                     if (frames[j] == -1) {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\"> - ";
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\"> - ";
                     }
                     else {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + frames[j];
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + frames[j];
                     }
                 }
                 if (s == 0) {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Hit";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(0, 255, 0)";
                 }
                 else {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Miss";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(255, 0, 0)";
                 }
             }
@@ -662,27 +640,29 @@
 
                 row = table.insertRow((count) + 1);
                 cell = row.insertCell((k++));
-                cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + arr[i];
+                cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + arr[i];
                 count++;
 
                 for (j = 0; j < numberOfFrames; ++j) {
                     if (frames[j] == -1) {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\"> - ";
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\"> - ";
                     }
                     else {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + frames[j];
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + frames[j];
                     }
                 }
                 if (s == 0) {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Hit";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(0, 255, 0)";
                 }
                 else {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Miss";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(255, 0, 0)";
                 }
 
@@ -758,27 +738,29 @@
 
                 row = table.insertRow((count) + 1);
                 cell = row.insertCell((k++));
-                cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + arr[i];
+                cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + arr[i];
                 count++;
 
                 for (j = 0; j < numberOfFrames; ++j) {
                     if (frames[j] == -1) {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = " <FONT COLOR=\"#00FEFE\"> - ";
+                        cell.innerHTML = " <FONT COLOR=\"#2B4141\"> - ";
                     }
                     else {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + frames[j];
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + frames[j];
                     }
                 }
                 if (s == 0) {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Hit";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(0, 255, 0)";
                 }
                 else {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Miss";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(255, 0, 0)";
                 }
 
@@ -828,28 +810,30 @@
 
                 row = table.insertRow((count) + 1);
                 cell = row.insertCell((k++));
-                cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + arr[m];
+                cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + arr[m];
                 count++;
 
                 for (let n = 0; n < numberOfFrames; n++) {
                     if (temp[n] != -1) {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = "<FONT COLOR=\"#00FEFE\">" + temp[n];
+                        cell.innerHTML = "<FONT COLOR=\"#2B4141\">" + temp[n];
                     }
                     else {
                         cell = row.insertCell((k++));
-                        cell.innerHTML = " <FONT COLOR=\"#00FEFE\"> - ";
+                        cell.innerHTML = " <FONT COLOR=\"#2B4141\"> - ";
                     }
 
                 }
                 if (s == 0) {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Miss";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(255,0,0)";
                 }
                 else {
                     cell = row.insertCell((k++));
                     cell.innerHTML = "Hit";
+                    cell.style.color = "white";
                     cell.style.backgroundColor = "rgb(0, 255, 0)";
                 }
 
