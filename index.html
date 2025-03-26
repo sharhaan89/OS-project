@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS VISUALIZER</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-teal: #3AAFA9;
+            --color-mint: #B2EBE0;
+            --color-cream: #FDFAF6;
+            --color-amber: #FF9F1C;
+            --color-dark: #2B4141;
+            --color-light: #F7F7F7;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-cream);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo:before {
+            content: "\f233";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            font-weight: 900;
+        }
+        
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        .button {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown::after {
+            content: '';
+            position: absolute;
+            height: 13px;
+            width: 100%;
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 220px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            z-index: 1000;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: var(--color-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-mint);
+            color: var(--color-dark);
+            padding-left: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.6rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+            border-radius: 2px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .algo-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .algo-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            height: 120px;
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--color-teal);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            transition: var(--transition);
+            margin-top: auto;
+        }
+
+        .card-link:hover {
+            background-color: var(--color-amber);
+            color: white;
+            text-decoration: none;
+        }
+
+        footer {
+            background: var(--color-dark);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav li {
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = 'index.html';" class="button"><i class="fas fa-home"></i> Home</button></li>
+            <li class="dropdown">
+                <button class="button"><i class="fas fa-code-branch"></i> Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+                    <a href="process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+                    <a href="Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+                    <a href="mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+                    <a href="page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+                    <a href="Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+                    <a href="system_calls/system_calls.html"><i class="fas fa-phone-alt"></i> System Calls</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = 'about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+            <li><button class="button" onclick="location.href = 'references.html';"><i class="fas fa-book"></i> References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Operating System Concepts Visualizer</h1>
+        <p style="text-align: center; max-width: 800px; margin: 0 auto 40px auto;">
+            Explore interactive visualizations of key operating system algorithms and concepts.<br>
+            Click on any card below to learn more and see the algorithm in action.
+        </p>
+
+        <div class="card-grid">
+            <!-- Process Scheduling -->
+            <div class="algo-card" onclick="location.href='process_scheduling/process.html'">
+                <div class="card-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Process Scheduling</h3>
+                    <p class="card-description">
+                        Explore CPU scheduling algorithms like FCFS, SJF, Round Robin, and Priority Scheduling that determine which process runs at a given time.
+                    </p>
+                    <a href="process_scheduling/process.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Process Synchronization -->
+            <div class="algo-card" onclick="location.href='process_sync/home.html'">
+                <div class="card-icon">
+                    <i class="fas fa-sync"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Process Synchronization</h3>
+                    <p class="card-description">
+                        Understand mechanisms like semaphores, monitors, and mutex that coordinate multiple processes to prevent race conditions.
+                    </p>
+                    <a href="process_sync/home.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Banker's Algorithm -->
+            <div class="algo-card" onclick="location.href='Bankers/bankers.html'">
+                <div class="card-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Banker's Algorithm</h3>
+                    <p class="card-description">
+                        Visualize the deadlock avoidance algorithm that determines whether allocating resources will lead to a safe or unsafe state.
+                    </p>
+                    <a href="Bankers/bankers.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Memory Fitting Algorithms -->
+            <div class="algo-card" onclick="location.href='mft_mvt/Fit.html'">
+                <div class="card-icon">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Memory Fitting Algorithms</h3>
+                    <p class="card-description">
+                        Explore First-Fit, Best-Fit, and Worst-Fit algorithms for allocating memory blocks to processes.
+                    </p>
+                    <a href="mft_mvt/Fit.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Page Replacement Algorithms -->
+            <div class="algo-card" onclick="location.href='page_replacement/page_replacement_home.html'">
+                <div class="card-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Page Replacement Algorithms</h3>
+                    <p class="card-description">
+                        Understand FIFO, LRU, and Optimal page replacement strategies used in virtual memory management.
+                    </p>
+                    <a href="page_replacement/page_replacement_home.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Disk Scheduling -->
+            <div class="algo-card" onclick="location.href='Disk/disk.html'">
+                <div class="card-icon">
+                    <i class="fas fa-hdd"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Disk Scheduling</h3>
+                    <p class="card-description">
+                        Visualize FCFS, SSTF, SCAN, C-SCAN, and other algorithms that determine the order of disk I/O operations.
+                    </p>
+                    <a href="Disk/disk.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- File Allocation -->
+            <div class="algo-card" onclick="location.href='file_allocation/file.html'">
+                <div class="card-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">File Allocation</h3>
+                    <p class="card-description">
+                        Explore contiguous, linked, and indexed file allocation methods used in file systems.
+                    </p>
+                    <a href="file_allocation/file.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- MVT/MFT -->
+            <div class="algo-card" onclick="location.href='mft_mvt/MVFT.html'">
+                <div class="card-icon">
+                    <i class="fas fa-memory"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">MVT/MFT</h3>
+                    <p class="card-description">
+                        Compare Multiprogramming with Fixed Tasks (MFT) and Multiprogramming with Variable Tasks (MVT) memory management techniques.
+                    </p>
+                    <a href="mft_mvt/MVFT.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+
+            <!-- System Calls -->
+            <div class="algo-card" onclick="location.href='system_calls/system_calls.html'">
+                <div class="card-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">System Calls</h3>
+                    <p class="card-description">
+                        Learn about the interface between user programs and the operating system kernel, including process, file, and device management calls.
+                    </p>
+                    <a href="system_calls/system_calls.html" class="card-link">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
+    </footer>
+</body>
+</html>
