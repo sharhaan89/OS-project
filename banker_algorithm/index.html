@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm Visualization</title>
+    <link rel="stylesheet" href="css//banker_algorithm.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Banker's Algorithm Visualization</h1>
+            <nav>
+                <ul>
+                    <li class="active"><a href="index.html">Visualization</a></li>
+                    <li><a href="explanation.html">Detailed Explanation</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <div class="controls-section">
+                <div class="controls">
+                    <button id="reset" class="btn primary">Reset</button>
+                    <button id="next-step" class="btn">Next Step</button>
+                    <button id="auto-run" class="btn">Auto Run</button>
+                    <div class="speed-control">
+                        <label for="speed">Speed:</label>
+                        <select id="speed">
+                            <option value="1500">Slow</option>
+                            <option value="800" selected>Medium</option>
+                            <option value="300">Fast</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-container">
+                <div class="resources-section">
+                    <div class="resources-display">
+                        <h2>Available Resources</h2>
+                        <div id="available-resources" class="resource-display"></div>
+                    </div>
+                    <div class="resources-display">
+                        <h2>Total Resources</h2>
+                        <div id="total-resources" class="resource-display"></div>
+                    </div>
+
+                    <div class="current-step-section">
+                        <h2>Current Step</h2>
+                        <div id="current-step-display" class="step-info"></div>
+                    </div>
+                </div>
+
+
+                <div class="processes-section">
+                    <h2>Process Status</h2>
+                    <div id="process-container" class="process-grid"></div>
+                </div>
+
+        
+            </div>
+        </div>
+        <div class="execution-section">
+            <h2>Execution Sequence</h2>
+            <div id="sequence-container">
+                <div class="sequence-track"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Banker's Algorithm - Resource Allocation and Deadlock Prevention</p>
+        </footer>
+    </div>
+    <script src="js/banker_algorithm.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm - Detailed Explanation</title>
+    <link rel="stylesheet" href="css/banker_algorithm.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Banker's Algorithm Explanation</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Visualization</a></li>
+                    <li class="active"><a href="explanation.html">Detailed Explanation</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="explanation-content">
+            <section class="explanation-section">
+                <h2>What is the Banker's Algorithm?</h2>
+                <p>The Banker's Algorithm is a resource allocation and deadlock avoidance algorithm used in operating systems. It was developed by Edsger Dijkstra and is named "Banker's algorithm" because it simulates how a bank manages its money - never allocating more than it has and always maintaining a safe state.</p>
+            </section>
+
+            <section class="explanation-section">
+                <h2>Key Concepts</h2>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>Safe State</h3>
+                        <p>A state is safe if the system can allocate resources to each process in some order without causing a deadlock.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Safe Sequence</h3>
+                        <p>A sequence of processes that can be executed completely without causing deadlock.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Resource Types</h3>
+                        <p>Different categories of resources (A, B, C, etc.) that processes need to complete their execution.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Claim</h3>
+                        <p>The maximum number of resources a process might need (also called Max).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="explanation-section">
+                <h2>Data Structures</h2>
+                <div class="data-table">
+                    <table>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>Available</td>
+                            <td>Vector of available resources of each type</td>
+                        </tr>
+                        <tr>
+                            <td>Max</td>
+                            <td>Matrix defining maximum demand of each process</td>
+                        </tr>
+                        <tr>
+                            <td>Allocation</td>
+                            <td>Matrix defining resources currently allocated to each process</td>
+                        </tr>
+                        <tr>
+                            <td>Need</td>
+                            <td>Matrix defining remaining resource needs of each process (Max - Allocation)</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <section class="explanation-section">
+                <h2>Algorithm Steps</h2>
+                <div class="algorithm-steps">
+                    <ol>
+                        <li>
+                            <h3>Initialization</h3>
+                            <p>Set up the Work vector = Available and Finish[i] = false for all processes.</p>
+                        </li>
+                        <li>
+                            <h3>Find a process</h3>
+                            <p>Find a process P<sub>i</sub> such that:</p>
+                            <ul>
+                                <li>Finish[i] = false</li>
+                                <li>Need<sub>i</sub> ≤ Work</li>
+                            </ul>
+                            <p>If no such process exists, go to step 4.</p>
+                        </li>
+                        <li>
+                            <h3>Simulate allocation</h3>
+                            <p>Work = Work + Allocation<sub>i</sub></p>
+                            <p>Finish[i] = true</p>
+                            <p>Go back to step 2.</p>
+                        </li>
+                        <li>
+                            <h3>Check safety</h3>
+                            <p>If Finish[i] = true for all processes, the system is in a safe state.</p>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="explanation-section">
+                <h2>Applications</h2>
+                <p>The Banker's Algorithm is used in various resource management systems:</p>
+                <ul>
+                    <li>Operating system resource allocation</li>
+                    <li>Database transaction management</li>
+                    <li>Distributed systems resource management</li>
+                    <li>Cloud computing resource allocation</li>
+                </ul>
+            </section>
+
+            <section class="explanation-section">
+                <h2>Limitations</h2>
+                <ul>
+                    <li>Requires processes to declare their maximum resource needs in advance</li>
+                    <li>Assumes a fixed number of resources and processes</li>
+                    <li>Can be too conservative, leading to resource underutilization</li>
+                    <li>Computational overhead for large systems</li>
+                </ul>
+            </section>
+        </div>
+
+        <footer>
+            <p>Banker's Algorithm - Resource Allocation and Deadlock Prevention</p>
+        </footer>
+    </div>
+</body>
+</html>
