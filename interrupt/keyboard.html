@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Keyboard Interrupt Visualization</title>
+  <link rel="stylesheet" href="keyboard.css">
+
+</head>
+<body>
+  <div class="container">
+    <h1>Advanced Keyboard Interrupt Visualization</h1>
+    
+    <div class="visualization">
+      <!-- Status Bar -->
+      <div class="status-bar">System Status: <span id="systemStatus">Normal</span></div>
+      
+      <!-- Components -->
+      <div class="component keyboard" id="keyboard">
+        <h3>Keyboard</h3>
+        <p>Input Device</p>
+        <div class="key" id="key">A</div>
+      </div>
+      
+      <div class="component circuit" id="circuit">
+        <h3>Keyboard Controller</h3>
+        <p>Manages signal</p>
+      </div>
+      
+      <div class="component interrupt-controller" id="interruptController">
+        <h3>Interrupt Controller</h3>
+        <p>Prioritizes & routes interrupts</p>
+        <p id="irqNumber">IRQ #1</p>
+      </div>
+      
+      <div class="component cpu" id="cpu">
+        <h3>CPU</h3>
+        <p id="cpuStatus">Executing Current Process</p>
+        <div class="register-display">
+          <div class="register-row">
+            <span class="register">PC: 0x8042</span>
+            <span class="register">SP: 0xF7A0</span>
+          </div>
+          <div class="register-row">
+            <span class="register">IP: 0x7F21</span>
+            <span class="register" id="interruptFlag">IF: 1</span>
+          </div>
+          <div class="register-row">
+            <span class="register">AX: 0x00</span>
+            <span class="register">BX: 0xFF</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="component memory" id="memory">
+        <h3>Memory</h3>
+        <p>RAM</p>
+        <div class="vector-table" id="vectorTable">
+          <h3>Interrupt Vector Table</h3>
+          <p>Maps IRQs to handlers</p>
+        </div>
+        <div class="vector-entry" id="vectorEntry">0x01: 0x8C20
+IRQ1 - Keyboard
+Handler</div>
+      </div>
+      
+      <div class="component os" id="os">
+        <h3>Operating System</h3>
+        <p>Manages hardware & processes</p>
+      </div>
+      
+      <div class="component process" id="process">
+        <h3>User Process</h3>
+        <p>Running Application</p>
+      </div>
+      
+      <div class="component isr" id="isr">
+        <h3>Interrupt Service Routine</h3>
+        <p>Keyboard Handler</p>
+      </div>
+      
+      <div class="process-stack" id="processStack">
+        Process Stack
+        <div id="stackContent">PC: 0x8042
+Flags: 0x202</div>
+      </div>
+      
+      <div class="code-snippet" id="isrCode">void keyboard_isr() {
+  uint8_t scancode = in(0x60);
+  keypress_handler(scancode);
+  send_eoi(1);
+}</div>
+      
+      <!-- Signal and data -->
+      <div class="signal" id="signal"></div>
+      <div class="data-packet" id="dataPacket">0xA</div>
+      
+      <!-- CPU details -->
+      <div class="cpu-details" id="cpuDetails"></div>
+      
+      <!-- Connections -->
+      <div class="connection" style="width: 2px; height: 50px; left: 130px; top: 110px;"></div>
+      <div class="connection" style="width: 80px; height: 2px; left: 130px; top: 160px;"></div>
+      <div class="connection" style="width: 120px; height: 2px; left: 200px; top: 180px;"></div>
+      <div class="connection" style="width: 2px; height: 30px; left: 320px; top: 180px;"></div>
+      <div class="connection" style="width: 100px; height: 2px; left: 500px; top: 160px;"></div>
+      <div class="connection" style="width: 2px; height: 130px; left: 500px; top: 160px;"></div>
+      <div class="connection" style="width: 2px; height: 130px; left: 410px; top: 210px;"></div>
+      <div class="connection" style="width: 80px; height: 2px; left: 410px; top: 340px;"></div>
+      <div class="connection" style="width: 2px; height: 30px; left: 170px; top: 340px;"></div>
+      <div class="connection" style="width: 300px; height: 2px; left: 170px; top: 370px;"></div>
+      <div class="connection" style="width: 2px; height: 100px; left: 590px; top: 250px;"></div>
+      <div class="connection" style="width: 40px; height: 2px; left: 550px; top: 450px;"></div>
+      <div class="connection" style="width: 2px; height: 60px; left: 710px; top: 250px;"></div>
+      <div class="connection" style="width: 2px; height: 60px; left: 450px; top: 390px;"></div>
+      <div class="connection" style="width: 240px; height: 2px; left: 450px; top: 390px;"></div>
+      
+      <!-- Progress bar -->
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+    
+    <div class="step-info" id="stepInfo">
+      Press the key to start the interrupt process visualization.
+    </div>
+    
+    <div class="controls">
+      <button class="button" id="startButton">Press Keyboard Key</button>
+      <button class="button" id="resetButton">Reset</button>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #81a1c1;"></span> Keyboard
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #88c0d0;"></span> Controller
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #5e81ac;"></span> Interrupt Controller
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #a3be8c;"></span> CPU
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #bf616a;"></span> OS
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #d08770;"></span> Vector Table
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #b48ead;"></span> ISR
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #ebcb8b;"></span> User Process
+      </div>
+    </div>
+  </div>
+<script src="keyboard.js"></script>
+</body>
