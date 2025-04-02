@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Program Lifecycle: From Program to Process</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>C Program Lifecycle Visualization</h1>
+        
+        <!-- Main compilation pipeline -->
+        <div class="stage-container">
+            <div class="stages">
+                <div class="stage" data-stage="source">
+                    <div class="stage-icon">
+                        <span>.c</span>
+                    </div>
+                    <div class="stage-title">Source Code</div>
+                    <div class="stage-desc">Human-readable C code</div>
+                </div>
+                
+                <div class="stage" data-stage="preprocessor">
+                    <div class="stage-icon">
+                        <span>PP</span>
+                    </div>
+                    <div class="stage-title">Preprocessor</div>
+                    <div class="stage-desc">Processes directives</div>
+                </div>
+                
+                <div class="stage" data-stage="compiler">
+                    <div class="stage-icon">
+                        <span>.o</span>
+                    </div>
+                    <div class="stage-title">Compiler</div>
+                    <div class="stage-desc">Generates object code</div>
+                </div>
+                
+                <div class="stage" data-stage="linker">
+                    <div class="stage-icon">
+                        <span>🔗</span>
+                    </div>
+                    <div class="stage-title">Linker & Loader</div>
+                    <div class="stage-desc">Links libraries & loads executable</div>
+                </div>
+                
+                <div class="stage" data-stage="executable">
+                    <div class="stage-icon">
+                        <span>▶️</span>
+                    </div>
+                    <div class="stage-title">Executable</div>
+                    <div class="stage-desc">Ready to run program</div>
+                </div>
+            </div>
+            
+            <div class="arrow" id="progress-arrow"></div>
+            
+            <div id="details-panel" class="details-panel">
+                <h3 class="details-title">Source Code (.c)</h3>
+                <p class="details-description">This is where it all begins - you write human-readable C code in a text editor.</p>
+                <div class="code-box">
+                    <pre id="stage-code">#include &lt;stdio.h&gt;
+
+int main() {
+    printf("Hello, World!");
+    return 0;
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Program to Process Visualization -->
+        <div class="process-visualization">
+            <h2 class="process-title">From Program to Process</h2>
+            <p class="process-description">When an executable runs, the operating system transforms it into a process with memory space and resources:</p>
+            
+            <div class="process-container">
+                <div class="program-section">
+                    <div class="program-box">
+                        <div class="program-title">Executable Program</div>
+                        <div class="program-content">
+                            <div class="section text-section">Text (Code)</div>
+                            <div class="section data-section">Data</div>
+                            <div class="section bss-section">BSS</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="transformation-arrow">
+                    <div class="arrow-body"></div>
+                    <div class="arrow-label">OS Loader</div>
+                </div>
+                
+                <div class="process-section">
+                    <div class="process-box">
+                        <div class="process-title">Running Process</div>
+                        <div class="process-content">
+                            <div class="memory-layout">
+                                <div class="memory-section stack-section">
+                                    <span>Stack</span>
+                                    <div class="memory-detail">Function calls, local variables</div>
+                                </div>
+                                <div class="memory-section heap-section">
+                                    <span>Heap</span>
+                                    <div class="memory-detail">Dynamic memory allocation</div>
+                                </div>
+                                <div class="memory-section data-section">
+                                    <span>Data</span>
+                                    <div class="memory-detail">Global/static variables</div>
+                                </div>
+                                <div class="memory-section text-section">
+                                    <span>Text</span>
+                                    <div class="memory-detail">Machine code instructions</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="resources-container">
+                        <div class="resource cpu">
+                            <div class="resource-icon">CPU</div>
+                            <div class="resource-meter">
+                                <div class="resource-level"></div>
+                            </div>
+                        </div>
+                        <div class="resource memory">
+                            <div class="resource-icon">RAM</div>
+                            <div class="resource-meter">
+                                <div class="resource-level"></div>
+                            </div>
+                        </div>
+                        <div class="resource file">
+                            <div class="resource-icon">File</div>
+                            <div class="resource-meter">
+                                <div class="resource-level"></div>
+                            </div>
+                        </div>
+                        <div class="resource socket">
+                            <div class="resource-icon">Socket</div>
+                            <div class="resource-meter">
+                                <div class="resource-level"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="process-steps">
+                <div class="step" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-text">OS loads executable into memory</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Memory space allocation</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-text">PCB (Process Control Block) creation</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Resource allocation</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-text">Process execution begins</div>
+                </div>
+            </div>
+            
+            <div class="process-details-panel">
+                <h3 class="process-details-title">OS loads executable into memory</h3>
+                <p class="process-details-description">The operating system reads the executable file from disk and loads it into RAM, preparing it for execution.</p>
+            </div>
+        </div>
+        
+        <p class="note">Click on each stage or step to learn more about that phase of the compilation or process creation.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
