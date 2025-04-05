@@ -424,6 +424,27 @@
                 </div>
             </div>
             <div class="heading">
+                <h2>Least Frequently Used</h2>
+            </div>
+            <div>
+                <div class="flex-child">
+                    <div class="data">
+                        <table id="tbl6" class="table table-bordered">
+                            <thead>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="summary card border border-dark align-items-center">
+                        <p id="page_miss6"></p>
+                        <p id="page_hits6"></p>
+                        <p id="miss_rate6"></p>
+                        <p id="hit_rate6"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="heading">
                 <h2>Random</h2>
             </div>
             <div>
@@ -471,6 +492,7 @@
         FIFO();
         Optimal();
         LRU();
+        LFU()
         MRU();
         Random();
         function FIFO() {
@@ -924,6 +946,121 @@
 
 
         }
+
+        function LFU() {
+                var table6 = document.getElementById("tbl6");
+                var row6 = table6.insertRow(0);
+
+                for (let j = 0; j <= (numberOfFrames + 1); j++) {
+                    var cell1 = row6.insertCell(j);
+
+                    if (j == 0) {
+                        cell1.innerHTML = "<b>Page Sequence</b>";
+                    }
+                    else if (j == (numberOfFrames + 1)) {
+                        cell1.innerHTML = "<b>Page Hit/Miss</b>";
+                    }
+                    else {
+                        cell1.innerHTML = `<b>Frame ${j}</b>`;
+                    }
+                }
+
+                let pageFaults = 0, pageHits = 0, count = 0, missRate, hitRate;
+                let frames = new Array(numberOfFrames).fill(-1);
+                let pageFrequency = new Map(); // LFU
+                let insertionTime = new Map(); // FIFO tie-breaker
+                let currentTime = 0;
+
+                for (let i = 0; i < numberOfPages; i++) {
+                    let page = arr[i];
+                    let found = false;
+                    let k = 0;
+                    currentTime++;
+
+                    // Update frequency
+                    pageFrequency.set(page, (pageFrequency.get(page) || 0) + 1);
+
+                    // Check if HIT
+                    for (let j = 0; j < numberOfFrames; j++) {
+                        if (frames[j] === page) {
+                            pageHits++;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    // MISS handling
+                    if (!found) {
+                        pageFaults++;
+
+                        let replaced = false;
+                        // Check for empty frame first
+                        for (let j = 0; j < numberOfFrames; j++) {
+                            if (frames[j] === -1) {
+                                frames[j] = page;
+                                insertionTime.set(page, currentTime);
+                                replaced = true;
+                                break;
+                            }
+                        }
+
+                        // If no empty frame, apply LFU with FIFO tie-breaking
+                        if (!replaced) {
+                            let minFreq = Infinity;
+                            let minInsert = Infinity;
+                            let replaceIndex = -1;
+
+                            for (let j = 0; j < numberOfFrames; j++) {
+                                let freq = pageFrequency.get(frames[j]);
+                                let insertTime = insertionTime.get(frames[j]);
+
+                                if (
+                                    freq < minFreq ||
+                                    (freq === minFreq && insertTime < minInsert)
+                                ) {
+                                    minFreq = freq;
+                                    minInsert = insertTime;
+                                    replaceIndex = j;
+                                }
+                            }
+
+                            let pageToRemove = frames[replaceIndex];
+                            frames[replaceIndex] = page;
+                            insertionTime.delete(pageToRemove);
+                            insertionTime.set(page, currentTime);
+                        }
+                    }
+
+                    // Insert row for current state
+                    row6 = table6.insertRow((count++) + 1);
+                    cell6 = row6.insertCell(k++);
+                    cell6.innerHTML = page;
+
+                    for (let f = 0; f < numberOfFrames; f++) {
+                        cell6 = row6.insertCell(k++);
+                        cell6.innerHTML = frames[f] !== -1 ? frames[f] : " - ";
+                    }
+
+                    cell6 = row6.insertCell(k++);
+                    if (found) {
+                        cell6.innerHTML = "Hit";
+                        cell6.style.color = "white";
+                        cell6.style.backgroundColor = "rgb(0, 255, 0)";
+                    } else {
+                        cell6.innerHTML = "Miss";
+                        cell6.style.color = "white";
+                        cell6.style.backgroundColor = "rgb(255, 0, 0)";
+                    }
+                }
+
+                hitRate = (pageHits / numberOfPages) * 100;
+                missRate = (pageFaults / numberOfPages) * 100;
+
+                document.getElementById("page_miss6").innerHTML = "Total Number Of Page Faults : " + `<b>${pageFaults}</b>`;
+                document.getElementById("page_hits6").innerHTML = "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
+                document.getElementById("miss_rate6").innerHTML = "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
+                document.getElementById("hit_rate6").innerHTML = "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
+            }
 
 
         function Random() {
