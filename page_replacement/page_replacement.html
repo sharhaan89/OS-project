@@ -1,378 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PAGE REPLACEMENT ALGORITHM</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="disk.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-        :root {
-            --color-teal: #3AAFA9;
-            --color-mint: #B2EBE0;
-            --color-cream: #FDFAF6;
-            --color-amber: #FF9F1C;
-            --color-dark: #2B4141;
-            --color-light: #F7F7F7;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
+      :root {
+        --color-teal: #3aafa9;
+        --color-mint: #b2ebe0;
+        --color-cream: #fdfaf6;
+        --color-amber: #ff9f1c;
+        --color-dark: #2b4141;
+        --color-light: #f7f7f7;
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            background-color: var(--color-cream);
-            color: var(--color-dark);
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-        }
+      body {
+        background-color: var(--color-cream);
+        color: var(--color-dark);
+        font-family: "Poppins", sans-serif;
+        line-height: 1.6;
+      }
 
-        nav {
-            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
-            padding: 15px 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      nav {
+        background: linear-gradient(135deg, var(--color-teal), #2e8b99);
+        padding: 15px 5%;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-        .logo {
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            text-decoration: none;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
-        
-        .logo:before {
-            content: "\f233";
-            font-family: "Font Awesome 5 Free";
-            margin-right: 10px;
-            font-weight: 900;
-        }
-        
-        .logo:hover {
-            color: white;
-            text-decoration: none;
-            transform: scale(1.05);
-            transition: var(--transition);
-        }
+      .logo {
+        color: white;
+        font-size: 24px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            margin: 0;
-        }
+      .logo:before {
+        content: "\f233";
+        font-family: "Font Awesome 5 Free";
+        margin-right: 10px;
+        font-weight: 900;
+      }
 
-        nav li {
-            margin: 0 10px;
-        }
+      .logo:hover {
+        color: white;
+        text-decoration: none;
+        transform: scale(1.05);
+        transition: var(--transition);
+      }
 
-        .nav-button {
-            background-color: var(--color-teal);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: var(--transition);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+      nav ul {
+        list-style: none;
+        display: flex;
+        margin: 0;
+      }
 
-        .nav-button:hover {
-            background-color: var(--color-amber);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
+      nav li {
+        margin: 0 10px;
+      }
 
-        .nav-button:active {
-            transform: translateY(1px);
-        }
+      .nav-button {
+        background-color: var(--color-teal);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
 
-        .dropdown {
-            position: relative;
-        }
+      .nav-button:hover {
+        background-color: var(--color-amber);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            min-width: 230px;
-            background: white;
-            box-shadow: var(--shadow);
-            border-radius: 8px;
-            z-index: 1000;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            margin-top: 10px;
-            overflow: hidden;
-        }
+      .nav-button:active {
+        transform: translateY(1px);
+      }
 
-        .dropdown:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-        }
+      .dropdown {
+        position: relative;
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        min-width: 230px;
+        background: white;
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        z-index: 1000;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        margin-top: 10px;
+        overflow: hidden;
+      }
 
-        .dropdown-content a {
-            color: var(--color-dark);
-            padding: 12px 20px;
-            text-decoration: none;
-            display: block;
-            transition: var(--transition);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            font-weight: 500;
-        }
+      .dropdown:hover .dropdown-content {
+        display: block;
+        opacity: 1;
+      }
 
-        .dropdown-content a:last-child {
-            border-bottom: none;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-10px);
         }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
 
-        .dropdown-content a:hover {
-            background: var(--color-mint);
-            color: var(--color-dark);
-            padding-left: 25px;
-        }
-        .dropdown::after{
-            content: '';
-            position: absolute;
-            height: 13px;
-            width: 100%;
-            bottom: -10px;
-            left: 0;
-        }
-        .container {
-            max-width: 70%;
-            margin: 0 auto;
-            padding: 50px 20px;
+      .dropdown-content a {
+        color: var(--color-dark);
+        padding: 12px 20px;
+        text-decoration: none;
+        display: block;
+        transition: var(--transition);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: 500;
+      }
+
+      .dropdown-content a:last-child {
+        border-bottom: none;
+      }
+
+      .dropdown-content a:hover {
+        background: var(--color-mint);
+        color: var(--color-dark);
+        padding-left: 25px;
+      }
+      .dropdown::after {
+        content: "";
+        position: absolute;
+        height: 13px;
+        width: 100%;
+        bottom: -10px;
+        left: 0;
+      }
+      .container {
+        max-width: 70%;
+        margin: 0 auto;
+        padding: 50px 20px;
+      }
+
+      h1 {
+        color: var(--color-dark);
+        font-size: 2.6rem;
+        margin-bottom: 30px;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
+      }
+
+      h1:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--color-teal),
+          var(--color-mint)
+        );
+        border-radius: 2px;
+      }
+
+      .content,
+      .second {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-top: 40px;
+        padding: 15px 10px;
+      }
+
+      p {
+        margin-bottom: 20px;
+        font-size: 17px;
+        line-height: 1.7;
+      }
+
+      b {
+        color: var(--color-teal);
+        font-weight: 600;
+      }
+      .button-container {
+        display: flex;
+        flex-direction: column; /* Stack buttons vertically */
+        /* Adds space between buttons */
+        width: 200px; /* Make sure the container spans the full width */
+        align-items: center; /* Center the buttons horizontally */
+      }
+      .sim-button {
+        margin-top: 20px;
+        border: none;
+        color: white;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        display: block;
+        align-items: center;
+        width: 200px;
+      }
+
+      .sim-button:hover {
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+      }
+      #btn1,
+      #btn2,
+      #btn3 {
+        width: 100%;
+        height: 100%;
+        border-radius: 30px;
+      }
+      .flex-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+      }
+      @media (max-width: 768px) {
+        .text-container {
+          padding: 30px 20px;
         }
 
         h1 {
-            color: var(--color-dark);
-            font-size: 2.6rem;
-            margin-bottom: 30px;
-            font-weight: 700;
-            text-align: center;
-            position: relative;
-            padding-bottom: 15px;
+          font-size: 2rem;
         }
-
-        h1:after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
-            border-radius: 2px;
-        }
-
-        .content, .second {
-            display:flex;
-            flex-direction: column;
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-top: 40px;
-            padding: 15px 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 17px;
-            line-height: 1.7;
-        }
-
-        b {
-            color: var(--color-teal);
-            font-weight: 600;
-        }  
-        .button-container {
-            display: flex;
-            flex-direction: column; /* Stack buttons vertically */
- /* Adds space between buttons */
-            width: 200px; /* Make sure the container spans the full width */
-            align-items: center; /* Center the buttons horizontally */
-        }
-        .sim-button {
-            margin-top: 20px;
-            border: none;
-            color: white;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: block;
-            align-items: center;
-            width: 200px;
-        }
-
-        .sim-button:hover {
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-        }
-        #btn1, #btn2, #btn3{
-            width: 100%;
-            height: 100%;
-            border-radius: 30px;
-        }
-        .flex-container {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0;
-        }
-        @media (max-width: 768px) {
-            .text-container {
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <a class="logo" href="../index.html">OS VISUALIZER</a>
-        <ul>
-            <li><button onclick="location.href = '../index.html';" class="nav-button"><i class="fas fa-home"></i> Home</button></li>
-            <li class="dropdown">
-                <button class="nav-button"><i class="fas fa-code-branch"></i> Algorithms</button>
-                <div class="dropdown-content">
-                    <a href="../process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
-                    <a href="../process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
-                    <a href="../Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
-                    <a href="../mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
-                    <a href="../page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
-                    <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
-                    <a href="../file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
-                    <a href="../mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
-                </div>
-            </li>
-            <li><button class="nav-button" onclick="location.href = '../about.html';"><i class="fas fa-info-circle"></i> About</button></li>
-            <li><button class="nav-button" onclick="location.href = '../references.html';"><i class="fas fa-book"></i> References</button></li>
-        </ul>
+      <a class="logo" href="../index.html">OS VISUALIZER</a>
+      <ul>
+        <li>
+          <button onclick="location.href = '../index.html';" class="nav-button">
+            <i class="fas fa-home"></i> Home
+          </button>
+        </li>
+        <li class="dropdown">
+          <button class="nav-button">
+            <i class="fas fa-code-branch"></i> Algorithms
+          </button>
+          <div class="dropdown-content">
+            <a href="../process_scheduling/process.html"
+              ><i class="fas fa-tasks"></i> Process Scheduling</a
+            >
+            <a href="../process_sync/home.html"
+              ><i class="fas fa-sync"></i> Process Synchronization</a
+            >
+            <a href="../Bankers/bankers.html"
+              ><i class="fas fa-university"></i> Bankers Algorithm</a
+            >
+            <a href="../mft_mvt/Fit.html"
+              ><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a
+            >
+            <a href="../page_replacement/page_replacement_home.html"
+              ><i class="fas fa-exchange-alt"></i> Page Replacement</a
+            >
+            <a href="../Disk/disk.html"
+              ><i class="fas fa-hdd"></i> Disk Scheduling</a
+            >
+            <a href="../file_allocation/file.html"
+              ><i class="fas fa-folder"></i> File Allocation</a
+            >
+            <a href="../mft_mvt/MVFT.html"
+              ><i class="fas fa-memory"></i> MFT and MVT</a
+            >
+          </div>
+        </li>
+        <li>
+          <button class="nav-button" onclick="location.href = '../about.html';">
+            <i class="fas fa-info-circle"></i> About
+          </button>
+        </li>
+        <li>
+          <button
+            class="nav-button"
+            onclick="location.href = '../references.html';"
+          >
+            <i class="fas fa-book"></i> References
+          </button>
+        </li>
+      </ul>
     </nav>
     <div class="container">
-        <h1>PAGE REPLACEMENT VISUALIZER</h1>
-        <div class="content">
-            <div class= "flex-container">
-                <div class = "flex-child">
-            Enter the Stream of Pages:
-                </div>
-                <div class = "flex-child">
+      <h1>PAGE REPLACEMENT VISUALIZER</h1>
+      <div class="content">
+        <div class="flex-container">
+          <div class="flex-child">Enter the Stream of Pages:</div>
+          <div class="flex-child">
             <div class="input-string">
-                <input type="text" id="input_string" required>
+              <input type="text" id="input_string" required />
             </div>
-                </div>
-            </div>
-            <div class= "flex-container">
-                <div class = "flex-child">
-            Enter the number of Frames:
-                </div>
-                <div class = "flex-child">
+          </div>
+        </div>
+        <div class="flex-container">
+          <div class="flex-child">Enter the number of Frames:</div>
+          <div class="flex-child">
             <div class="frame-size">
-                <input id="frame_size" placeholder="" type="number" name="frame" min="1" required>
+              <input
+                id="frame_size"
+                placeholder=""
+                type="number"
+                name="frame"
+                min="1"
+                required
+              />
             </div>
-                </div>
-            </div>
-            <div class="flex-container">
-                <label for="algo">Choose the Algorithm : </label>
-                <div class="algorithm">
-                <select id="drop_down" name="algo" required>
-                    <option value="" disabled selected>Select your option</option>
-                    <option value="FIFO">First In First Out </option>
-                    <option value="Optimal">Optimal</option>
-                    <option value="LRU">Least Recently Used</option>
-                    <option value="MRU">Most Recently Used</option>
-                    <option value="LFU">Least Frequently Used</option>
-                    <option value="Random">Random</option>
-                </select>
-            </div>
-            </div>
-            <div class="button-container">
-                <div class="sim-button">
-                    <input id="btn1" style="background-color:#02b126"; type="button" onclick="disableButton1(); showDiv(); visualize();"
-                        class="frmBtn btn btn-lg btn-block btn-success" value="Visualize">
-                </div>
-                <div class="sim-button">
-                    <input id="btn2" style="background-color: #ff0000"; type="button" onclick="enableButton1(); reset();"
-                        class="frmBtn btn btn-lg btn-block btn-danger" value="Reset">
-                </div>
-                <div class="sim-button">
-                    <input id="btn3" type="button" onclick="redirect();"
-                        class="frmBtn btn btn-lg btn-block btn-info" value="Compare">
-                </div>
-            </div>
-
+          </div>
         </div>
-        <div class="second" id="SUM" style="display:none;">
-            <div class="heading">
-                <h1>VISUALIZATION AND SUMMARY</h1>
-            </div>
-            <div class="data">
-                <table id="tbl" class="table table-bordered">
-                    <thead>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="summary card border border-dark align-items-center">
-                <p id="page_miss"></p>
-                <p id="page_hits"></p>
-                <p id="miss_rate"></p>
-                <p id="hit_rate"></p>
-            </div>
+        <div class="flex-container">
+          <label for="algo">Choose the Algorithm : </label>
+          <div class="algorithm">
+            <select id="drop_down" name="algo" required>
+              <option value="" disabled selected>Select your option</option>
+              <option value="FIFO">First In First Out</option>
+              <option value="Optimal">Optimal</option>
+              <option value="LRU">Least Recently Used</option>
+              <option value="MRU">Most Recently Used</option>
+              <option value="LFU">Least Frequently Used</option>
+              <option value="Random">Random</option>
+              <option value="SCA">Second Chance</option>
+            </select>
+          </div>
         </div>
+        <div class="button-container">
+          <div class="sim-button">
+            <input
+              id="btn1"
+              style="background-color: #02b126"
+              ;
+              type="button"
+              onclick="disableButton1(); showDiv(); visualize();"
+              class="frmBtn btn btn-lg btn-block btn-success"
+              value="Visualize"
+            />
+          </div>
+          <div class="sim-button">
+            <input
+              id="btn2"
+              style="background-color: #ff0000"
+              ;
+              type="button"
+              onclick="enableButton1(); reset();"
+              class="frmBtn btn btn-lg btn-block btn-danger"
+              value="Reset"
+            />
+          </div>
+          <div class="sim-button">
+            <input
+              id="btn3"
+              type="button"
+              onclick="redirect();"
+              class="frmBtn btn btn-lg btn-block btn-info"
+              value="Compare"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="second" id="SUM" style="display: none">
+        <div class="heading">
+          <h1>VISUALIZATION AND SUMMARY</h1>
+        </div>
+        <div class="data">
+          <table id="tbl" class="table table-bordered">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="summary card border border-dark align-items-center">
+          <p id="page_miss"></p>
+          <p id="page_hits"></p>
+          <p id="miss_rate"></p>
+          <p id="hit_rate"></p>
+        </div>
+      </div>
     </div>
-</body>
-<script>
+  </body>
+  <script>
     var numberOfFrames, dropDown, inputString, numberOfPages, pageFaults = 0, pageHits = 0, count = 0, missRate, hitRate;
     var arr = new Array();
     function visualize() {
@@ -538,7 +603,7 @@
                         }
                     }
 
-                    //Finding farthest occuring page 
+                    //Finding farthest occuring page
                     if (flag3 == 0) {
                         max = temp[0];
                         pos = 0;
@@ -899,6 +964,96 @@
                 return pos;
             }
         }
+
+        else if (dropDown == "SCA") {
+        let pointer = 0;
+        let frames = new Array(numberOfFrames).fill(-1);
+        let refBits = new Array(numberOfFrames).fill(0);
+        let count = 0;
+
+        for (let i = 0; i < numberOfPages; i++) {
+          let currentPage = arr[i];
+          let s = 0,
+            k = 0;
+
+          // Check if page is already in frame
+          for (let j = 0; j < numberOfFrames; j++) {
+            if (frames[j] == currentPage) {
+              pageHits++;
+              refBits[j] = 1; // set reference bit
+              s = 1;
+              break;
+            }
+          }
+
+          if (s == 0) {
+            pageFaults++;
+            while (true) {
+              if (frames[pointer] == -1) {
+                frames[pointer] = currentPage;
+                refBits[pointer] = 0;
+                pointer = (pointer + 1) % numberOfFrames;
+                break;
+              } else if (refBits[pointer] == 0) {
+                frames[pointer] = currentPage;
+                refBits[pointer] = 0;
+                pointer = (pointer + 1) % numberOfFrames;
+                break;
+              } else {
+                refBits[pointer] = 0;
+                pointer = (pointer + 1) % numberOfFrames;
+              }
+            }
+          }
+
+          row = table.insertRow(count + 1);
+          cell = row.insertCell(k++);
+          cell.innerHTML = '<FONT COLOR="#2B4141">' + currentPage;
+          count++;
+
+          for (let j = 0; j < numberOfFrames; j++) {
+            if (frames[j] != -1) {
+              cell = row.insertCell(k++);
+              cell.innerHTML =
+                '<FONT COLOR="#2B4141">' +
+                frames[j] +
+                " <sup>(R:" +
+                refBits[j] +
+                ")</sup>";
+            } else {
+              cell = row.insertCell(k++);
+              cell.innerHTML = ' <FONT COLOR="#2B4141"> - ';
+            }
+          }
+
+          cell = row.insertCell(k++);
+          if (s == 1) {
+            cell.innerHTML = "Hit";
+            cell.style.color = "white";
+            cell.style.backgroundColor = "rgb(0, 255, 0)";
+          } else {
+            cell.innerHTML = "Miss";
+            cell.style.color = "white";
+            cell.style.backgroundColor = "rgb(255, 0, 0)";
+          }
+        }
+
+        hitRate = (pageHits / numberOfPages) * 100;
+        missRate = (pageFaults / numberOfPages) * 100;
+
+        document.getElementById("page_miss").innerHTML =
+          "Total Number Of Page Faults : " + `<b>${pageFaults}</b>`;
+        document.getElementById("page_hits").innerHTML =
+          "Total Number Of Page Hits : " + `<b>${pageHits}</b>`;
+        document.getElementById("miss_rate").innerHTML =
+          "Page Miss Rate : " + `<b>${missRate.toFixed(2)}%</b>`;
+        document.getElementById("hit_rate").innerHTML =
+          "Page Hit Rate : " + `<b>${hitRate.toFixed(2)}%</b>`;
+      }
+
+          
+
+
         else if(dropDown == "Random"){
             var temp = new Array();
             for (let o = 0; o < numberOfFrames; o++) {
@@ -982,6 +1137,5 @@
     function redirect(){
         window.location.href = "page_replacement_comparison.html";
     }
-</script>
-
-</html> 
+  </script>
+</html>
