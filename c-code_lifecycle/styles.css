@@ -1,0 +1,427 @@
+/* Main Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+
+/* Compilation Pipeline Stages */
+.stage-container {
+    position: relative;
+    margin-bottom: 60px;
+}
+
+.stages {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 18%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.stage:hover {
+    transform: translateY(-5px);
+}
+
+.stage-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #3498db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+}
+
+.stage.active .stage-icon {
+    background-color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.stage-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.stage-desc {
+    text-align: center;
+    font-size: 14px;
+    color: #7f8c8d;
+    padding: 0 5px;
+}
+
+.arrow {
+    position: absolute;
+    height: 6px;
+    background-color: #3498db;
+    top: 40px;
+    left: 40px;
+    width: 0%;
+    transition: width 0.5s;
+    z-index: 1;
+}
+
+.arrow:after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: -7px;
+    border-left: 12px solid #3498db;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.details-panel {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 0;
+    margin-top: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+}
+
+.details-panel.active {
+    max-height: 500px;
+    opacity: 1;
+    padding: 20px;
+}
+
+.details-title {
+    color: #e74c3c;
+    margin-top: 0;
+}
+
+.code-box {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+.code-box pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Process Visualization */
+.process-visualization {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.process-title {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.process-description {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.process-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* Program Box */
+.program-section, .process-section {
+    width: 45%;
+}
+
+.program-box, .process-box {
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.program-title, .process-title {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.program-content, .process-content {
+    padding: 15px;
+    background-color: #fff;
+}
+
+.section {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}
+
+.text-section {
+    background-color: #e74c3c;
+}
+
+.data-section {
+    background-color: #2ecc71;
+}
+
+.bss-section {
+    background-color: #f1c40f;
+}
+
+/* Transformation Arrow */
+.transformation-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 10%;
+}
+
+.arrow-body {
+    height: 4px;
+    width: 100%;
+    background-color: #9b59b6;
+    position: relative;
+}
+
+.arrow-body:after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: -8px;
+    border-left: 12px solid #9b59b6;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.arrow-label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #9b59b6;
+    font-weight: bold;
+}
+
+/* Memory Layout in Process */
+.memory-layout {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.memory-section {
+    padding: 15px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+}
+
+.stack-section {
+    background-color: #9b59b6;
+    height: 20%;
+}
+
+.heap-section {
+    background-color: #e67e22;
+    height: 30%;
+}
+
+.memory-detail {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 5px;
+    font-weight: normal;
+}
+
+/* Resource Visualization */
+.resources-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.resource {
+    width: 48%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.resource-icon {
+    background-color: #34495e;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-weight: bold;
+    width: 60px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.resource-meter {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.resource-level {
+    height: 100%;
+    width: 0;
+    background-color: #3498db;
+    transition: width 1s;
+}
+
+/* Process Steps */
+.process-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 18%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.step:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #9b59b6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+}
+
+.step.active .step-number {
+    background-color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.step-text {
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Process Details Panel */
+.process-details-panel {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.process-details-title {
+    color: #9b59b6;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fillUp {
+    from { height: 0; }
+    to { height: 100%; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-resource {
+    animation: pulse 2s infinite;
+}
+
+.animate-memory {
+    animation: fillUp 1s forwards;
+}
+
+.animate-fade {
+    animation: fadeIn 1s forwards;
+}
+
+.note {
+    text-align: center;
+    font-style: italic;
+    color: #7f8c8d;
+    margin-top: 30px;
+}

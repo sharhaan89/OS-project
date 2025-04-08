@@ -172,7 +172,7 @@
             bottom: -10px;
             left: 0;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -376,41 +376,39 @@
     </nav>
     
     <div class="container">
-        <h1>Random Page Replacement</h1>
+        <h1>Least Frequently Used (LFU) Page Replacement</h1>
 
         <div class="content">
             <div class="image-container">
-                <img src="images/random.png" alt="Random Page Replacement Illustration">
+                <img src="images/lru.png" alt="LFU Page Replacement Illustration">
             </div>
             <div class="text-container">
                 <div class="info-card">
                     <p>
-                        The <b>Random Page Replacement (RANDOM)</b> algorithm is a page replacement strategy that selects a page at random to replace when a page fault occurs and all frames are full. It does not rely on any access history or usage patterns, instead randomly choosing which page to evict.
+                        The <b>Least Frequently Used (LFU)</b> is a page replacement strategy that selects the page with the least number of accesses for replacement. It operates under the assumption that pages with the fewest accesses in the past are least likely to be accessed in the future.
                     </p>
                 </div>
 
                 <h3>How It Works</h3>
                 <p>
-                    In the RANDOM algorithm, when a page fault occurs, the algorithm randomly picks one of the pages currently in memory to replace with the new page. The decision is entirely based on chance, with no consideration for which page was accessed most recently or how frequently pages have been used.
+                    LFU maintains a count of how often each page is accessed. When a page fault occurs and all frames are full, LFU selects the page with the lowest access count for replacement. In case of ties (pages with the same access count), it may use additional criteria like FIFO (First In, First Out).
                 </p>
 
                 <h3>Advantages</h3>
                 <ul class="bullet-points">
-                    <li>Extremely simple to implement, as no complex data structures or algorithms are required.</li>
-                    <li>Efficient in terms of implementation time and overhead.</li>
-                    <li>Can perform reasonably well in certain cases, especially when there is no clear pattern to page access.</li>
-                    <li>Does not require tracking of page usage, reducing operational complexity</li>
+                    <li>Effective in environments where some pages are repeatedly accessed while others are not.</li>
+                    <li>Avoids the problem of replacing frequently used pages prematurely.</li>
+                    <li>Can adapt well to changing access patterns over time.</li>
                 </ul>
 
                 <h3>Disadvantages</h3>
                 <ul class="bullet-points">
-                    <li>Highly unpredictable, making performance difficult to analyze and optimize.</li>
-                    <li>Can perform poorly in scenarios where certain pages are accessed frequently, leading to unnecessary evictions.</li>
-                    <li>Not efficient in cases where access patterns can be leveraged (e.g., for better performance with LRU or FIFO)</li>
-                    <li>Lacks any strategy to minimize the number of page faults, often leading to a high fault rate</li>
+                    <li>Requires frequent updating of access counts for each page, which adds overhead.</li>
+                    <li>May struggle with sudden changes in access patterns or bursty access behaviors.</li>
+                    <li>Implementation complexity increases with the need for accurate access counting and management.</li>                 
                 </ul>
 
-                <button class="sim-button" onclick="location.href='page_replacement.html';">Try Random Simulation</button>
+                <button class="sim-button" onclick="location.href='page_replacement.html';">Try LFU Simulation</button>
             </div>
         </div>
     </div>
