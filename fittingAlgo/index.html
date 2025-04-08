@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <nav>
+        <a class="logo" href="../index.html"> OS VISUALIZER </a>
+        <ul>
+            <li><button class="button" onclick="location.href = '../index.html';">Home</button></li>
+            <li class="dropdown"><button class="button dropbtn">Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="../process_scheduling/process.html">Process Scheduling</a>
+                    <a href="../process_sync/home.html">Process Synchronization</a>
+                    <a href="../banker_algorithm/index.html">Bankers Algorithm</a>
+                    <a href="index.html">Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html">Paging and Page Replacement Algorithm</a>
+                    <a href="../Disk/disk.html">Disk Scheduling</a>
+                    <a href="../file_allocation/file.html">File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html">MFT and MVT</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = '../about.html';">About</button></li>
+            <li><button class="button" onclick="location.href = '../references.html';">References</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Memory Fit</h1>
+        <div class="firstfit">
+            <h3 class="heading">First Fit</h3>
+            <p>
+                First Fit allocates the first available memory block that is large enough to accommodate the process. It starts searching from the beginning of the memory and assigns the process to the first block that meets the size requirement. This technique is simple and efficient but can lead to significant fragmentation.
+            </p>
+            <button class="button" onclick="location.href='firstFit.html'">
+                Simulate First Fit
+            </button>
+        </div>
+        <div class="bestfit">
+            <h3 class="heading">Best Fit</h3>
+            <p>
+                Best Fit allocates the smallest available memory block that is just large enough
+                to hold the process. It searches through the entire memory and selects the block
+                that results in the smallest amount of wasted space. This technique
+                reduces fragmentation, but it requires more time for searching the entire memory.
+            </p>
+            <button class="button" onclick="location.href='bestFit.html'">
+                Simulate Best Fit
+            </button>
+        </div>
+        <div class="worstfit">
+            <h3 class="heading">Worst Fit</h3>
+            <p>
+                Worst Fit allocates the largest available memory block to the process. It searches through the entire memory and
+                assigns the process to the largest block, leaving behind a larger amount of wasted space. This techniqu
+                increases fragmentation but can be useful when large processes need to be
+                allocated.
+            </p>
+            <button class="button" onclick="location.href='worstFit.html'">
+                Simulate Worst Fit
+            </button>
+        </div>
+        <div class="nextfit">
+            <h3 class="heading">Next Fit</h3>
+            <p>
+            Next Fit is an extension of the First Fit technique that starts searching for
+            the next available block from the location where the previous allocation took
+            place. It reduces the search time compared to First Fit as it continues the
+            search from the last allocated
+            position. However, it may still result in fragmentation similar to First Fit.
+            </p>
+            <button class="button" onclick="location.href='nextFit.html'">
+                Simulate Next Fit
+            </button>
+        </div>
+    </div>
+</body>
+</html>
