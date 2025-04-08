@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RST DISK SCHEDULING ALGORITHM</title>
+    <title>RSS DISK SCHEDULING ALGORITHM</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
@@ -465,33 +465,35 @@
     </nav>
     
     <div class="container">
-        <h1>RST (Random Seek Time) Disk Scheduling</h1>
+        <h1>RSS (Random Scheduling System) Disk Scheduling</h1>
 
         <div class="content">
             <div class="text-container">
                 <div class="info-card">
                     <p>
-                        <b>RST</b> (Random Seek Time) is a disk scheduling algorithm that services cylinder requests in a random order. Unlike other disk scheduling algorithms that optimize head movement, RST makes no attempt to optimize seek operations and simply processes requests as they appear in a randomized sequence.
+                        <b>RSS</b> (Random Scheduling System) is a disk scheduling algorithm that services requests in a random order, similar to RST but with some key differences in implementation. Unlike traditional disk scheduling algorithms that optimize head movement, RSS introduces randomness to ensure fairness and prevent starvation of requests.
                     </p>
                 </div>
 
-                <h3>How RST Works</h3>
+                <h3>How RSS Works</h3>
                 <p>
-                    The RST algorithm is one of the simplest disk scheduling algorithms conceptually, but it often leads to inefficient disk access patterns. It randomizes the order of processing disk requests, which can help avoid starvation but typically results in higher average seek times.
+                    The RSS algorithm is designed to provide fair access to all disk requests while maintaining some level of efficiency. It randomly selects requests from the queue rather than processing them in a fixed order or optimizing for seek time.
                 </p>
                 <p>
                     The algorithm follows these steps:
                 </p>
                 <ul class="bullet-points">
-                    <li>Randomize the order of all pending requests in the disk queue</li>
-                    <li>Service the requests in this random order, moving the disk head from its current position to each randomly selected request</li>
-                    <li>The randomization can be performed once at the beginning (static RST) or dynamically after each request (dynamic RST)</li>
-                    <li>No optimization is performed to minimize head movement or seek time</li>
+                    <li>Maintain a queue of all pending disk requests</li>
+                    <li>For each scheduling decision, randomly select a request from the queue</li>
+                    <li>Service the selected request by moving the disk head to its position</li>
+                    <li>Remove the serviced request from the queue</li>
+                    <li>Repeat until all requests are serviced</li>
+                    <li>The randomness can be weighted to slightly favor requests closer to the current head position</li>
                 </ul>
 
                 <h3>Example Calculation</h3>
                 <p>
-                    Let's say we have a disk with 200 cylinders (0-199), and the head is currently at position 50. The request queue is:
+                    Consider a disk with 200 cylinders (0-199), and the head is currently at position 50. The request queue is:
                 </p>
 
                 <table class="example-table">
@@ -510,22 +512,22 @@
                 </table>
 
                 <p>
-                    After randomization, the RST algorithm might reorder these requests to:
+                    RSS might service these requests in the following random order:
                 </p>
 
                 <table class="example-table">
                     <thead>
                         <tr>
-                            <th colspan="7">Requests After RST Randomization (Initial Position: 50)</th>
+                            <th colspan="7">Requests After RSS Random Selection (Initial Position: 50)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>119</td>
-                            <td>11</td>
-                            <td>34</td>
-                            <td>180</td>
                             <td>62</td>
+                            <td>34</td>
+                            <td>119</td>
+                            <td>180</td>
+                            <td>11</td>
                             <td>123</td>
                             <td>95</td>
                         </tr>
@@ -540,78 +542,79 @@
                     <thead>
                         <tr>
                             <th>Head Movement</th>
-                            <th>|50-119|</th>
-                            <th>|119-11|</th>
-                            <th>|11-34|</th>
-                            <th>|34-180|</th>
-                            <th>|180-62|</th>
-                            <th>|62-123|</th>
+                            <th>|50-62|</th>
+                            <th>|62-34|</th>
+                            <th>|34-119|</th>
+                            <th>|119-180|</th>
+                            <th>|180-11|</th>
+                            <th>|11-123|</th>
                             <th>|123-95|</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Distance</td>
-                            <td>69</td>
-                            <td>108</td>
-                            <td>23</td>
-                            <td>146</td>
-                            <td>118</td>
+                            <td>12</td>
+                            <td>28</td>
+                            <td>85</td>
                             <td>61</td>
+                            <td>169</td>
+                            <td>112</td>
                             <td>28</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <p>
-                    Total head movement = 69 + 108 + 23 + 146 + 118 + 61 + 28 = 553 cylinders
+                    Total head movement = 12 + 28 + 85 + 61 + 169 + 112 + 28 = 495 cylinders
                 </p>
                 <p>
-                    Note: This is just one possible outcome of randomization. Each run of RST could produce different results and total head movements.
+                    Note: This is just one possible outcome of RSS. Each run could produce different results and total head movements.
                 </p>
 
                 <h3>Comparison with Other Disk Scheduling Algorithms</h3>
                 <ul class="bullet-points">
-                    <li>FCFS (First-Come, First-Served): Services requests in order of arrival; more predictable than RST but still not optimized</li>
-                    <li>SSTF (Shortest Seek Time First): Optimizes for minimal head movement; significantly more efficient than RST in most cases</li>
-                    <li>SCAN/C-SCAN: Moves head in one direction serving all requests until reaching the end; much better seek performance than RST</li>
-                    <li>LOOK/C-LOOK: Improved versions of SCAN that turn around when reaching the last request; more efficient than RST</li>
+                    <li>FCFS (First-Come, First-Served): Services requests in order of arrival; more predictable than RSS but can lead to starvation</li>
+                    <li>SSTF (Shortest Seek Time First): Optimizes for minimal head movement; more efficient than RSS but can starve distant requests</li>
+                    <li>RST (Random Seek Time): Similar to RSS but typically shuffles all requests at once rather than selecting randomly one at a time</li>
+                    <li>SCAN/C-SCAN: Moves head in one direction serving all requests; more efficient but less fair than RSS</li>
                 </ul>
 
                 <h3>Advantages</h3>
                 <ul class="bullet-points">
-                    <li>Very simple to implement and understand</li>
-                    <li>Prevents complete starvation of any particular request</li>
-                    <li>Can help distribute workload across all areas of the disk</li>
-                    <li>Useful for testing worst-case scenarios in disk scheduling</li>
+                    <li>Ensures fairness - all requests have equal chance of being serviced</li>
+                    <li>Prevents starvation of any particular request</li>
+                    <li>Simple to implement and understand</li>
                     <li>Can be useful in systems where predictable ordering is not required</li>
+                    <li>Works well with solid-state drives where seek time is less of a concern</li>
                 </ul>
 
                 <h3>Disadvantages</h3>
                 <ul class="bullet-points">
-                    <li>Typically produces very high total seek distances</li>
-                    <li>Poor average seek times compared to other algorithms</li>
-                    <li>Inefficient disk utilization and lower throughput</li>
-                    <li>Highly unpredictable performance</li>
-                    <li>May cause excessive wear on mechanical disks due to random movement patterns</li>
+                    <li>Typically produces higher total seek distances than optimized algorithms</li>
+                    <li>Poor average seek times compared to SSTF or SCAN</li>
+                    <li>Unpredictable performance makes it difficult to estimate completion times</li>
+                    <li>May cause excessive wear on mechanical disks due to random movement</li>
+                    <li>Not suitable for real-time systems where predictable performance is needed</li>
                 </ul>
                 
                 <h3>Use Cases</h3>
                 <p>
-                    While RST is rarely used as a primary disk scheduling algorithm in production systems, it can be useful in:
+                    While RSS is not commonly used as a primary disk scheduling algorithm, it can be useful in:
                 </p>
                 <ul class="bullet-points">
-                    <li>Testing disk controller robustness under worst-case scenarios</li>
-                    <li>Benchmarking to establish baseline performance for other algorithms</li>
                     <li>Systems where fairness is more important than efficiency</li>
-                    <li>Educational purposes to demonstrate the importance of optimized scheduling</li>
+                    <li>Solid-state drives where seek time is not a significant factor</li>
+                    <li>Testing and benchmarking disk controller performance</li>
+                    <li>Educational purposes to demonstrate tradeoffs in scheduling</li>
+                    <li>Systems with uniform access time across the disk</li>
                 </ul>
             </div>
         </div>
 
         <div class="simulation-container">
-            <h3>RST Disk Scheduling Simulator</h3>
-            <p>Use this simulator to visualize how the RST disk scheduling algorithm works with your custom inputs.</p>
+            <h3>RSS Disk Scheduling Simulator</h3>
+            <p>Use this simulator to visualize how the RSS disk scheduling algorithm works with your custom inputs.</p>
 
             <div class="simulation-form">
                 <div class="form-group">
@@ -635,7 +638,7 @@
                 </div>
             </div>
 
-            <button id="simulateBtn" class="sim-button">Run RST Simulation</button>
+            <button id="simulateBtn" class="sim-button">Run RSS Simulation</button>
 
             <div class="results-container" id="resultsContainer" style="display: none;">
                 <div class="result-card">
@@ -669,7 +672,7 @@
             const simulateBtn = document.getElementById('simulateBtn');
             const resultsContainer = document.getElementById('resultsContainer');
             
-            // Simple pseudo-random number generator for consistent results when a seed is provided
+            
             function seededRandom(seed) {
                 let state = seed || Math.floor(Math.random() * 10000);
                 return function() {
@@ -677,50 +680,48 @@
                     return state / 233280;
                 };
             }
-            
-            // Fisher-Yates shuffle algorithm
-            function shuffleArray(array, randomFunc) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(randomFunc() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
+         
+            function randomSelectRequests(array, randomFunc) {
+                const result = [];
+                const tempArray = [...array];
+                
+                while (tempArray.length > 0) {
+                    const randomIndex = Math.floor(randomFunc() * tempArray.length);
+                    result.push(tempArray[randomIndex]);
+                    tempArray.splice(randomIndex, 1);
                 }
-                return array;
+                
+                return result;
             }
             
             simulateBtn.addEventListener('click', function() {
-                // Get input values
+           
                 const cylinderSequenceInput = document.getElementById('cylinderSequence').value;
                 const initialCylinder = parseInt(document.getElementById('initialCylinder').value);
                 const lastCylinder = parseInt(document.getElementById('lastCylinder').value);
                 const seedValue = document.getElementById('seed').value ? parseInt(document.getElementById('seed').value) : null;
-                
-                // Validate inputs
+            
                 if (!cylinderSequenceInput || isNaN(initialCylinder) || isNaN(lastCylinder)) {
                     alert('Please fill in all required fields with valid values');
                     return;
                 }
                 
-                // Parse cylinder sequence
                 const cylinderSequence = cylinderSequenceInput.split(',').map(num => parseInt(num.trim()));
                 
-                // Check if all sequence numbers are valid
+     
                 for (let cylinder of cylinderSequence) {
                     if (isNaN(cylinder) || cylinder < 0 || cylinder > lastCylinder) {
                         alert(`Invalid cylinder value: ${cylinder}. All cylinders must be between 0 and ${lastCylinder}`);
                         return;
                     }
                 }
-                
-                // Initialize random number generator with seed if provided
+              
                 const random = seededRandom(seedValue);
-                
-                // Perform RST algorithm (shuffle the requests randomly)
-                const shuffledRequests = shuffleArray([...cylinderSequence], random);
-                
-                // Build the complete seek sequence
-                let seekSequence = [initialCylinder, ...shuffledRequests];
-                
-                // Calculate total seek time
+              
+                const randomOrder = randomSelectRequests(cylinderSequence, random);
+            
+                let seekSequence = [initialCylinder, ...randomOrder];
+            
                 let totalSeekTime = 0;
                 const movements = [];
                 
@@ -736,15 +737,14 @@
                 
                 const averageSeekTime = (totalSeekTime / cylinderSequence.length).toFixed(2);
                 
-                // Update results
+            
                 document.getElementById('totalSeekTime').textContent = totalSeekTime;
                 document.getElementById('averageSeekTime').textContent = averageSeekTime;
-                document.getElementById('seekSequence').textContent = shuffledRequests.join(', ');
+                document.getElementById('seekSequence').textContent = randomOrder.join(', ');
                 
-                // Show results container
                 resultsContainer.style.display = 'block';
                 
-                // Create graph
+        
                 const xValues = Array.from({ length: seekSequence.length }, (_, i) => i);
                 
                 const trace = {
@@ -776,7 +776,7 @@
                 }));
                 
                 const layout = {
-                    title: 'RST Disk Scheduling Head Movement',
+                    title: 'RSS Disk Scheduling Head Movement',
                     xaxis: {
                         title: 'Request Sequence',
                         tickmode: 'array',
@@ -801,8 +801,7 @@
                 };
                 
                 Plotly.newPlot('seekChart', [trace], layout);
-                
-                // Scroll to results
+             
                 resultsContainer.scrollIntoView({ behavior: 'smooth' });
             });
         });
