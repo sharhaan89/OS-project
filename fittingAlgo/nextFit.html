@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Next Fit Algorithm - Memory Management</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<nav>
+		<a class="logo" href="../index.html">OS VISUALIZER</a>
+		<ul>
+			<li><button onclick="location.href = '../index.html';" class="button"><i class="fas fa-home"></i> Home</button></li>
+			<li class="dropdown">
+				<button class="button"><i class="fas fa-code-branch"></i> Algorithms</button>
+				<div class="dropdown-content">
+					<a href="../process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+					<a href="../process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+					<a href="../Bankers/bankers.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+					<a href="../mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+					<a href="../page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+					<a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+					<a href="../file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+					<a href="../mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+				</div>
+			</li>
+			<li><button class="button" onclick="location.href = '../about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+			<li><button class="button" onclick="location.href = '../references.html';"><i class="fas fa-book"></i> References</button></li>
+		</ul>
+	</nav>
+
+	<div class="container">
+		<h1>Next Fit Memory Allocation</h1>
+
+		<div class="simulation-container">
+			<div class="input-group">
+				<label for="block-size">Enter the size of blocks:</label>
+				<input type="number" id="block-size" placeholder="Enter block size">
+				<button onclick="createBlock()" class="button"><i class="fas fa-plus"></i> Create Block</button>
+			</div>
+
+			<div id="block-container"></div>
+
+			<div class="input-group">
+				<label for="process-size">Enter the size of the process:</label>
+				<input type="number" id="process-size" placeholder="Enter process size">
+				<button onclick="allocateProcess()" class="button"><i class="fas fa-memory"></i> Allocate Process</button>
+			</div>
+
+			<div id="allocation-log" class="log"></div>
+		</div>
+	</div>
+
+	<footer style="background: var(--color-dark); color: white; text-align: center; padding: 20px 0; margin-top: 50px;">
+		<p style="margin: 0;">© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
+	</footer>
+
+	<script>
+		var memoryBlocks = [];
+		var lastAllocatedIndex = -1;
+
+		function createBlock() {
+			var size = document.getElementById("block-size").value;
+			var blockContainer = document.getElementById("block-container");
+
+			var block = document.createElement("div");
+			block.className = "block";
+			block.style.width = size + "px";
+			block.style.height = "50px";
+			block.innerHTML = size;
+
+			blockContainer.appendChild(block);
+			memoryBlocks.push({ size: parseInt(size), allocatedSize: 0, element: block });
+		}
+
+		function allocateProcess() {
+			var processSize = parseInt(document.getElementById("process-size").value);
+			var allocationLog = document.getElementById("allocation-log");
+			var allocatedBlockIndex = -1;
+			var startIndex = (lastAllocatedIndex + 1) % memoryBlocks.length;
+
+			for (var i = 0; i < memoryBlocks.length; i++) {
+				var currentIndex = (startIndex + i) % memoryBlocks.length;
+				var remainingSize = memoryBlocks[currentIndex].size - memoryBlocks[currentIndex].allocatedSize;
+
+				if (remainingSize >= processSize) {
+					allocatedBlockIndex = currentIndex;
+					break;
+				}
+			}
+
+			if (allocatedBlockIndex !== -1) {
+				var remainingSize = memoryBlocks[allocatedBlockIndex].size - memoryBlocks[allocatedBlockIndex].allocatedSize;
+
+				if (remainingSize === processSize) {
+					memoryBlocks[allocatedBlockIndex].allocatedSize += processSize;
+					var allocatedBlockElement = memoryBlocks[allocatedBlockIndex].element;
+					allocatedBlockElement.style.width = memoryBlocks[allocatedBlockIndex].allocatedSize + "px";
+					allocatedBlockElement.innerHTML = memoryBlocks[allocatedBlockIndex].allocatedSize;
+					allocatedBlockElement.classList.add("allocated");
+				} else {
+					memoryBlocks[allocatedBlockIndex].allocatedSize += processSize;
+					var allocatedBlockElement = memoryBlocks[allocatedBlockIndex].element;
+					allocatedBlockElement.style.width = memoryBlocks[allocatedBlockIndex].allocatedSize + "px";
+					allocatedBlockElement.innerHTML = memoryBlocks[allocatedBlockIndex].allocatedSize;
+					allocatedBlockElement.classList.add("allocated");
+
+					var remainingBlockElement = document.createElement("div");
+					remainingBlockElement.className = "block";
+					remainingBlockElement.style.width = remainingSize - processSize + "px";
+					remainingBlockElement.style.height = "50px";
+					remainingBlockElement.innerHTML = remainingSize - processSize;
+
+					var blockContainer = document.getElementById("block-container");
+					blockContainer.insertBefore(remainingBlockElement, allocatedBlockElement.nextSibling);
+
+					memoryBlocks[allocatedBlockIndex].size -= processSize;
+					memoryBlocks[allocatedBlockIndex].allocatedSize = 0;
+					memoryBlocks[allocatedBlockIndex].element = remainingBlockElement;
+				}
+
+				lastAllocatedIndex = allocatedBlockIndex;
+				allocationLog.innerHTML += "<p>Process of size " + processSize + " allocated to block " + allocatedBlockIndex + "</p>";
+			} else {
+				allocationLog.innerHTML += "<p>No suitable block found for process of size " + processSize + "</p>";
+			}
+		}
+	</script>
+</body>
+
+</html>
