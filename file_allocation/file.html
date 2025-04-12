@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FILE ALLOCATION METHODS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-teal: #3AAFA9;
+            --color-mint: #B2EBE0;
+            --color-cream: #FDFAF6;
+            --color-amber: #FF9F1C;
+            --color-dark: #2B4141;
+            --color-light: #F7F7F7;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-cream);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo:before {
+            content: "\f233";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            font-weight: 900;
+        }
+        
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+            transform: scale(1.05);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        .button {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown::after {
+            content: '';
+            position: absolute;
+            height: 13px;
+            width: 100%;
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 220px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            z-index: 1000;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: var(--color-dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-mint);
+            color: var(--color-dark);
+            padding-left: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.6rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+            border-radius: 2px;
+        }
+
+        .method-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+        .method-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+        .method-icon {
+            height: 120px;
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .feature-list li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .feature-list li:before {
+            content: "\f00c";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: var(--color-teal);
+            position: absolute;
+            left: 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: var(--color-teal);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: rgba(178, 235, 224, 0.2);
+        }
+        
+        .comparison-table tr:nth-child(odd) {
+            background-color: white;
+        }
+
+        .simulation-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 12px 24px;
+            background-color: var(--color-teal);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .simulation-button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        footer {
+            background: var(--color-dark);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .method-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav li {
+                margin: 5px;
+            }
+        }
+        .intro-box {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 0 auto 40px auto;
+            max-width: 800px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--color-teal);
+        }
+
+        .intro-box p {
+            margin-bottom: 15px;
+        }
+
+        .intro-box ul {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .intro-box ul li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="../index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = '../index.html';" class="button"><i class="fas fa-home"></i> Home</button></li>
+            <li class="dropdown">
+                <button class="button"><i class="fas fa-code-branch"></i> Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="../process_scheduling/process.html"><i class="fas fa-tasks"></i> Process Scheduling</a>
+                    <a href="../process_sync/home.html"><i class="fas fa-sync"></i> Process Synchronization</a>
+                    <a href="../banker_algorithm/index.html"><i class="fas fa-university"></i> Bankers Algorithm</a>
+                    <a href="../deadlock_detection/deadlock_detection.html"><i class="fas fa-university"></i> DeadLock Detection(RAG)</a>
+                    <a href="../mft_mvt/Fit.html"><i class="fas fa-puzzle-piece"></i> Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html"><i class="fas fa-exchange-alt"></i> Page Replacement</a>
+                    <a href="../Disk/disk.html"><i class="fas fa-hdd"></i> Disk Scheduling</a>
+                    <a href="../file_allocation/file.html"><i class="fas fa-folder"></i> File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html"><i class="fas fa-memory"></i> MFT and MVT</a>
+                    <a href="../system_calls/system_calls.html"><i class="fas fa-phone-alt"></i> System Calls</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = '../about.html';"><i class="fas fa-info-circle"></i> About</button></li>
+            <li><button class="button" onclick="location.href = '../references.html';"><i class="fas fa-book"></i> References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>File Allocation Methods</h1>
+        
+        <div class="intro-box">
+            <p>The file allocation methods define how the files are stored in the disk blocks.</p>
+            
+            <p>The main idea behind these methods is to provide:</p>
+            <ul>
+                <li>Efficient disk space utilization.</li>
+                <li>Fast access to the file blocks.</li>
+            </ul>
+            
+            <p>There are 3 file allocation methods commonly used in Operating Systems to schedule files in the secondary disk.</p>
+            <p>All the three methods have their own advantages and disadvantages as discussed below:</p>
+        </div>
+
+        <div class="method-cards">
+            <a href="contiguous.html" class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-file-medical"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Contiguous Allocation</h3>
+                    <p>Files are stored in consecutive blocks on the disk. Each file occupies a contiguous set of blocks.</p>
+                    <ul class="feature-list">
+                        <li>Fast sequential access</li>
+                        <li>Simple implementation</li>
+                        <li>Suffers from external fragmentation</li>
+                    </ul>
+                </div>
+            </a>
+            
+            <a href="linked.html" class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Linked Allocation</h3>
+                    <p>Each file block contains a pointer to the next block. Files can be stored in any available blocks.</p>
+                    <ul class="feature-list">
+                        <li>No external fragmentation</li>
+                        <li>Flexible allocation</li>
+                        <li>Slower random access</li>
+                    </ul>
+                </div>
+            </a>
+            
+            <a href="indexed.html" class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Indexed Allocation</h3>
+                    <p>Uses an index block containing pointers to all blocks of the file. Provides efficient direct access.</p>
+                    <ul class="feature-list">
+                        <li>Direct access to blocks</li>
+                        <li>No external fragmentation</li>
+                        <li>Index block overhead</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Contiguous</th>
+                    <th>Linked</th>
+                    <th>Indexed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Random Access</td>
+                    <td>Excellent</td>
+                    <td>Poor</td>
+                    <td>Good</td>
+                </tr>
+                <tr>
+                    <td>Space Efficiency</td>
+                    <td>Poor</td>
+                    <td>Good</td>
+                    <td>Fair</td>
+                </tr>
+                <tr>
+                    <td>Implementation</td>
+                    <td>Simple</td>
+                    <td>Complex</td>
+                    <td>Moderate</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a href="simulation.html" class="simulation-button">
+            <i class="fas fa-play-circle"></i> Try Simulation
+        </a>
+    </div>
+
+</body>
+</html>
