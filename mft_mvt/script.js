@@ -25,8 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
         totalSize: 0,
         blockSize: 0,
         blocks: [],
-        isSetup: false
+        isSetup: false,
+        nextProcessId: 1  // Starting process ID counter
     };
+    
+    // Update process ID field with next available ID
+    function updateProcessIdField() {
+        processId.value = `P${memory.nextProcessId}`;
+    }
     
     // Setup memory
     setupMemory.addEventListener('click', function() {
@@ -56,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         memory.blockSize = bSize;
         memory.blocks = [];
         memory.isSetup = true;
+        memory.nextProcessId = 1; // Reset process ID counter when memory is reset
         
         const numBlocks = totalSize / bSize;
         
@@ -71,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         renderMemory();
         updateStats();
+        updateProcessIdField(); // Show next available process ID
     });
     
     // Allocate process
@@ -80,15 +88,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const id = processId.value.trim();
+        let id = processId.value.trim();
         const size = parseInt(processSize.value);
         
-        // Validation
+        // If process ID is empty, generate a default one
         if (!id) {
-            allocationError.textContent = 'Process ID is required';
-            return;
+            id = `P${memory.nextProcessId}`;
         }
         
+        // Validation
         if (isNaN(size) || size <= 0) {
             allocationError.textContent = 'Process size must be a positive number';
             return;
@@ -124,12 +132,18 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         memory.blocks[freeBlockIndex].internalFragmentation = memory.blockSize - size;
         
+        // Increment the process ID if we used the auto-generated one
+        if (id === `P${memory.nextProcessId}`) {
+            memory.nextProcessId++;
+            updateProcessIdField(); // Update to show the next available ID
+        }
+        
         renderMemory();
         updateStats();
         
-        // Clear input fields
-        processId.value = '';
-        processSize.value = '';
+        // DO NOT clear the input fields
+        // Just update the process ID field with the next ID
+        updateProcessIdField();
     });
     
     // Deallocate process
@@ -163,8 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
         renderMemory();
         updateStats();
         
-        // Clear input field
-        processId.value = '';
+        // Update the process ID field with the next ID
+        updateProcessIdField();
     });
     
     // Reset memory
@@ -181,9 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
             block.internalFragmentation = 0;
         });
         
+        // Reset process ID counter
+        memory.nextProcessId = 1;
+        
         allocationError.textContent = '';
         renderMemory();
         updateStats();
+        updateProcessIdField(); // Update to show P1 after reset
     });
     
     // Render memory visualization
@@ -244,6 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const fragDiv = document.createElement('div');
                     fragDiv.className = 'frag-indicator internal-frag';
                     fragDiv.style.width = `${fragWidth}%`;
+                    // Add padding to better center the text
+                    fragDiv.style.paddingLeft = '5px';
+                    fragDiv.style.paddingRight = '5px';
                     fragDiv.textContent = `${block.internalFragmentation} KB`;
                     blockContent.appendChild(fragDiv);
                 }
@@ -304,4 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     renderMemory();
+    // Set initial process ID in the field
+    updateProcessIdField();
 });
