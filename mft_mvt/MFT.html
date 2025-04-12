@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Fit Technique Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Memory Fit Technique Visualization</h1>
+        
+        <div class="setup-section">
+            <h2>Memory Setup</h2>
+            <div class="input-group">
+                <label for="memory-size">Total Memory Size (KB):</label>
+                <input type="number" id="memory-size" min="1" value="1024">
+            </div>
+            <div class="input-group">
+                <label for="block-size">Block Size (KB):</label>
+                <input type="number" id="block-size" min="1" value="128">
+            </div>
+            <div class="error-message" id="setup-error"></div>
+            <button id="setup-memory">Setup Memory</button>
+        </div>
+
+        <div class="process-section">
+            <h2>Process Allocation</h2>
+            <div class="input-group">
+                <label for="process-id">Process ID:</label>
+                <input type="text" id="process-id" placeholder="P1">
+            </div>
+            <div class="input-group">
+                <label for="process-size">Process Size (KB):</label>
+                <input type="number" id="process-size" min="1" value="50">
+            </div>
+            <div class="error-message" id="allocation-error"></div>
+            <button id="allocate-process">Allocate Process</button>
+            <button id="deallocate-process">Deallocate Process</button>
+            <button id="reset-memory">Reset All Memory</button>
+        </div>
+
+        <div class="visualization-section">
+            <h2>Memory Visualization</h2>
+            <div class="memory-visualization">
+                <div class="memory-container" id="memory-container">
+                    <div class="memory-placeholder">Set up memory to start visualization</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>Memory Statistics</h2>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Total Memory:</span>
+                    <span class="stat-value" id="total-memory">0 KB</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Used Memory:</span>
+                    <span class="stat-value" id="used-memory">0 KB</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Free Memory:</span>
+                    <span class="stat-value" id="free-memory">0 KB</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Internal Fragmentation:</span>
+                    <span class="stat-value" id="internal-fragmentation">0 KB</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">External Fragmentation:</span>
+                    <span class="stat-value" id="external-fragmentation">0 KB</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend-section">
+            <h2>Legend</h2>
+            <div class="legend-container">
+                <div class="legend-item">
+                    <div class="legend-color free-block"></div>
+                    <span>Free Block</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color allocated-block"></div>
+                    <span>Allocated Block</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color internal-frag"></div>
+                    <span>Internal Fragmentation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
