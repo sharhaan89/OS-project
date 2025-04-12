@@ -211,7 +211,7 @@
         /* Simulation Specific Styles */
         .control-panel {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
             padding: 20px;
@@ -414,7 +414,11 @@
             padding: 20px 0;
             margin-top: 50px;
         }
-
+        @media (max-width: 1200px) {
+            .control-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
         @media (max-width: 768px) {
             .control-panel {
                 grid-template-columns: 1fr;
@@ -506,6 +510,16 @@
                     </div>
                     <button id="allocateSeq" class="button"><i class="fas fa-plus-circle"></i> Allocate File</button>
                 </div>
+                
+                <div class="control-group" id="file-growth-controls">
+                    <h3><i class="fas fa-expand-arrows-alt"></i> File Growth</h3>
+                    <div>
+                        <label for="fileGrowthSize">Growth Size (blocks):</label>
+                        <input type="number" id="fileGrowthSize" min="1" value="1">
+                    </div>
+                    <button id="growFileBtn" class="button"><i class="fas fa-plus"></i> Grow Selected File</button>
+                    <small class="text-muted">Select a file first, then specify how many blocks to add.</small>
+                </div>
 
                 <!-- Indexed Allocation Controls -->
                 <div id="indexed-controls" class="control-group" style="display: none;">
@@ -549,16 +563,6 @@
                 <div class="control-group">
                     <button id="removeFile" class="button"><i class="fas fa-trash-alt"></i> Remove Selected File</button>
                     <button id="resetSimulation" class="button"><i class="fas fa-redo"></i> Reset Simulation</button>
-                </div>
-                
-                <div class="control-group" id="file-growth-controls">
-                    <h3><i class="fas fa-expand-arrows-alt"></i> File Growth</h3>
-                    <div>
-                        <label for="fileGrowthSize">Growth Size (blocks):</label>
-                        <input type="number" id="fileGrowthSize" min="1" value="1">
-                    </div>
-                    <button id="growFileBtn" class="button"><i class="fas fa-plus"></i> Grow Selected File</button>
-                    <small class="text-muted">Select a file first, then specify how many blocks to add.</small>
                 </div>
             </div>
 
