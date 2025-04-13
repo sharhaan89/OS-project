@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>READERS-WRITERS SIMULATION</title>
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #B2EBE0;
+      color: #2A4747;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      color: #2A4747;
+    }
+
+    .log-entry {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .reader-log { border-left: 4px solid #4CAF50; padding-left: 8px; }
+    .writer-log { border-left: 4px solid #F44336; padding-left: 8px; }
+    .system-log { border-left: 4px solid #2196F3; padding-left: 8px; }
+
+    .actor {
+      display: inline-block;
+      margin: 5px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background: #FFF8E1;
+    }
+
+    .reader { background-color: #C8E6C9; }
+    .writer { background-color: #FFCDD2; }
+
+    .control-panel {
+      margin-bottom: 20px;
+    }
+
+    .control-panel label {
+      font-weight: 500;
+    }
+
+    .log-panel {
+      background: #FFF8E1;
+      border-radius: 10px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .button {
+      background-color: #FFBA49;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #ffa726;
+    }
+
+    .semaphores {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Readers-Writers Problem Simulation</h1>
+
+  <div class="control-panel">
+    <label>Number of Readers:</label>
+    <input type="number" id="readerCount" value="3" min="1" max="10">
+
+    <label style="margin-left:20px;">Number of Writers:</label>
+    <input type="number" id="writerCount" value="2" min="1" max="10">
+
+    <label style="margin-left:20px;">Speed:</label>
+    <input type="range" id="speedSlider" min="1" max="10" value="5">
+    <span id="speedValue">5</span>
+
+    <button class="button" onclick="startSimulation()">Start</button>
+    <button class="button" onclick="stopSimulation()">Stop</button>
+    <button class="button" onclick="resetSimulation()">Reset</button>
+  </div>
+
+  <h2>Actors</h2>
+  <div id="actorDisplay"></div>
+
+  <h2>Semaphore Status</h2>
+  <div class="semaphores">
+    <strong>Read Count:</strong> <span id="readCount">0</span> |
+    <strong>Write Lock:</strong> <span id="writeLock">0</span>
+  </div>
+
+  <h2>Event Log</h2>
+  <div class="log-panel" id="logPanel">
+    <div class="log-entry system-log">System initialized.</div>
+  </div>
+</div>
+
+<script>
+    let readCount = 0;
+    let writeLock = 0;
+    let writerBusy = false;
+    let running = false;
+    
+    let readerThreads = [];
+    let writerQueue = [];
+    let intervalHandles = [];
+    let currentWriterIndex = 0;
+    
+    function log(message, type = "system") {
+      const logPanel = document.getElementById("logPanel");
+      const entry = document.createElement("div");
+      entry.className = `log-entry ${type}-log`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logPanel.appendChild(entry);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+    
+    function updateSemaphores() {
+      document.getElementById("readCount").textContent = readCount;
+      document.getElementById("writeLock").textContent = writeLock;
+    }
+    
+    function displayActors() {
+      const actorDisplay = document.getElementById("actorDisplay");
+      actorDisplay.innerHTML = "";
+    
+      readerThreads.forEach((_, i) => {
+        const el = document.createElement("div");
+        el.className = "actor reader";
+        el.textContent = `Reader ${i + 1}`;
+        actorDisplay.appendChild(el);
+      });
+    
+      writerQueue.forEach((_, i) => {
+        const el = document.createElement("div");
+        el.className = "actor writer";
+        el.textContent = `Writer ${i + 1}`;
+        actorDisplay.appendChild(el);
+      });
+    }
+    
+    function reader(id, speed) {
+      return setInterval(() => {
+        if (!running) return;
+    
+        if (writeLock === 0 && !writerBusy) {
+          readCount++;
+          updateSemaphores();
+          log(`Reader ${id} is reading`, "reader");
+    
+          setTimeout(() => {
+            readCount--;
+            updateSemaphores();
+            log(`Reader ${id} finished reading`, "reader");
+          }, 1000);
+        } else {
+          log(`Reader ${id} is waiting (writer active)`, "reader");
+        }
+      }, 1500 + (10 - speed) * 100);
+    }
+    
+    function rotateWriters(speed) {
+      return setInterval(() => {
+        if (!running || writerQueue.length === 0) return;
+    
+        const writerId = writerQueue[currentWriterIndex];
+    
+        // Only write if no readers or other writers are active
+        if (readCount === 0 && writeLock === 0 && !writerBusy) {
+          writerBusy = true;
+          writeLock = 1;
+          updateSemaphores();
+          log(`Writer ${writerId} is writing`, "writer");
+    
+          setTimeout(() => {
+            writeLock = 0;
+            writerBusy = false;
+            updateSemaphores();
+            log(`Writer ${writerId} finished writing`, "writer");
+    
+            // Move to next writer
+            currentWriterIndex = (currentWriterIndex + 1) % writerQueue.length;
+          }, 1200);
+        } else {
+          log(`Writer ${writerId} is waiting`, "writer");
+        }
+      }, 2000 + (10 - speed) * 120);
+    }
+    
+    function startSimulation() {
+      if (running) return;
+      running = true;
+      log("Simulation started", "system");
+    
+      const readers = parseInt(document.getElementById("readerCount").value);
+      const writers = parseInt(document.getElementById("writerCount").value);
+      const speed = parseInt(document.getElementById("speedSlider").value);
+    
+      readerThreads = new Array(readers).fill(0);
+      writerQueue = Array.from({ length: writers }, (_, i) => i + 1);
+      currentWriterIndex = 0;
+    
+      displayActors();
+    
+      readerThreads.forEach((_, i) => {
+        intervalHandles.push(reader(i + 1, speed));
+      });
+    
+      intervalHandles.push(rotateWriters(speed));
+    }
+    
+    function stopSimulation() {
+      running = false;
+      intervalHandles.forEach(clearInterval);
+      intervalHandles = [];
+      log("Simulation stopped", "system");
+    }
+    
+    function resetSimulation() {
+      stopSimulation();
+      readCount = 0;
+      writeLock = 0;
+      writerBusy = false;
+      readerThreads = [];
+      writerQueue = [];
+      document.getElementById("actorDisplay").innerHTML = "";
+      document.getElementById("logPanel").innerHTML = '<div class="log-entry system-log">System reset.</div>';
+      updateSemaphores();
+    }
+    
+    document.getElementById("speedSlider").addEventListener("input", function () {
+      document.getElementById("speedValue").textContent = this.value;
+      if (running) {
+        stopSimulation();
+        startSimulation();
+      }
+    });
+    </script>
+    
+    
+
+</body>
+</html>

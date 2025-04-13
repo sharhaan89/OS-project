@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PROCESS SYNCHRONIZATION PROBLEMS</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --color-teal: #80CBC4;
+            --color-mint: #B2EBE0;
+            --color-cream: #FFF8E1;
+            --color-amber: #FFBA49;
+            --color-dark: #2A4747;
+        }
+
+        body {
+            background-color: var(--color-mint);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: var(--color-amber);
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            justify-items: baseline;
+            align-items: baseline;
+            padding: 0 5%;
+            padding-top: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .logo:hover {
+            color: white;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            padding: 0;
+        }
+
+        li {
+            margin: 0 15px;
+        }
+
+        .button {
+            background-color: var(--color-amber);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            color: white;
+            min-width: 160px;
+            background: var(--color-amber);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-amber);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .container {
+            padding: 50px;
+            text-align: center;
+        }
+
+        .content {
+            display: grid;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .method-card {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: var(--color-cream);
+            border-radius: 10px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .method-icon {
+            font-size: 2.5rem;
+            color: var(--color-amber);
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--color-dark);
+            font-size: 2.4rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: var(--color-teal);
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "•";
+            color: var(--color-amber);
+            font-size: 1.5em;
+            left: 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid var(--color-mint);
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: var(--color-teal);
+            color: white;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: var(--color-cream);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="../index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = '../index.html';" class="button">Home</button></li>
+            <li class="dropdown">
+                <button class="button">Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="../process_scheduling/process.html">Process Scheduling</a>
+                    <a href="../process_sync/home.html">Process Synchronization</a>
+                    <a href="../Bankers/bankers.html">Bankers Algorithm</a>
+                    <a href="../mft_mvt/Fit.html">Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html">Page Replacement Algorithm</a>
+                    <a href="../Disk/disk.html">Disk Scheduling</a>
+                    <a href="../file_allocation/file.html">File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html">MFT and MVT</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = '../about.html';">About</button></li>
+            <li><button class="button" onclick="location.href = '../references.html';">References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Process Synchronization Problems</h1>
+
+        <div class="content">
+            <div class="method-card">
+                <div class="method-icon">🏭</div>
+                <h3><a href="prodcon.html" style="color: inherit; text-decoration: none;">Producer-Consumer Problem</a></h3>
+                <p>Two processes share a fixed-size buffer. The producer adds data to the buffer, and the consumer removes data from the buffer.</p>
+                <ul class="feature-list">
+                    <li>Requires synchronization to prevent buffer overflow/underflow</li>
+                    <li>Uses semaphores or monitors for coordination</li>
+                    <li>Classic example of concurrent access to shared resources</li>
+                </ul>
+            </div>
+
+            <div class="method-card">
+                <div class="method-icon">📚</div>
+                <h3><a href="readerswriters.html" style="color: inherit; text-decoration: none;">Readers-Writers Problem</a></h3>
+                <p>Multiple processes want to access a shared database: readers (only read data) and writers (modify data).</p>
+                <ul class="feature-list">
+                    <li>Multiple readers can access simultaneously</li>
+                    <li>Writers need exclusive access</li>
+                    <li>Various priorities can be implemented (reader/writer preference)</li>
+                </ul>
+            </div>
+
+            <div class="method-card">
+                <div class="method-icon">🍽</div>
+                <h3><a href="diningphilosophers.html" style="color: inherit; text-decoration: none;">Dining Philosophers Problem</a></h3>
+                <p>Five philosophers sit around a table with one fork between each pair. Each philosopher needs two forks to eat.</p>
+                <ul class="feature-list">
+                    <li>Demonstrates deadlock and starvation issues</li>
+                    <li>Requires careful resource allocation</li>
+                    <li>Multiple solutions exist with different trade-offs</li>
+                </ul>
+            </div>
+
+            <div class="method-card">
+                <div class="method-icon">✂</div>
+                <h3><a href="sleepingbarber.html" style="color: inherit; text-decoration: none;">Sleeping Barber Problem</a></h3>
+                <p>A barber shop with one barber, one barber chair, and a waiting room with several chairs.</p>
+                <ul class="feature-list">
+                    <li>Barber sleeps when no customers are present</li>
+                    <li>Arriving customers either wake the barber or wait</li>
+                    <li>Illustrates process coordination and mutual exclusion</li>
+                </ul>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Producer-Consumer</th>
+                        <th>Readers-Writers</th>
+                        <th>Dining Philosophers</th>
+                        <th>Sleeping Barber</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primary Focus</td>
+                        <td>Buffer Management</td>
+                        <td>Data Access Control</td>
+                        <td>Resource Allocation</td>
+                        <td>Process Coordination</td>
+                    </tr>
+                    <tr>
+                        <td>Main Challenge</td>
+                        <td>Overflow/Underflow</td>
+                        <td>Access Priorities</td>
+                        <td>Deadlock Prevention</td>
+                        <td>Customer Management</td>
+                    </tr>
+                    <tr>
+                        <td>Typical Solution</td>
+                        <td>Semaphores</td>
+                        <td>Read/Write Locks</td>
+                        <td>Resource Hierarchy</td>
+                        <td>Mutex + Semaphores</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
+        </div>
+    </div>
+    <script src="sync.js"></script>
+</body>
+</html>

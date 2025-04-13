@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PRODUCER-CONSUMER SIMULATION</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --color-teal: #80CBC4;
+            --color-mint: #B2EBE0;
+            --color-cream: #FFF8E1;
+            --color-amber: #FFBA49;
+            --color-dark: #2A4747;
+            --color-producer: #4CAF50;
+            --color-consumer: #F44336;
+        }
+
+        body {
+            background-color: var(--color-mint);
+            color: var(--color-dark);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        /* Reduced nav bar height */
+        nav {
+            background-color: var(--color-amber);
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 3%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .logo:hover {
+            color: white;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 0 10px;
+        }
+
+        /* Smaller buttons */
+        .button {
+            background-color: var(--color-amber);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: var(--color-amber);
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            color: white;
+            min-width: 160px;
+            background: var(--color-amber);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--color-amber);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Reduced container padding */
+        .container {
+            padding: 15px;
+            text-align: center;
+            max-width: 1200px;
+        }
+
+        /* Compact content with less padding */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Smaller headings */
+        h1 {
+            color: var(--color-dark);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: var(--color-teal);
+            margin-top: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 12px;
+        }
+
+        /* Improved grid layout for better space usage */
+        .simulation-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .control-panel {
+            background-color: var(--color-cream);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .buffer-display {
+            background-color: var(--color-cream);
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        /* Smaller buffer slots */
+        .buffer-slots {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 15px 0;
+            gap: 8px;
+        }
+
+        .buffer-slot {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--color-teal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .filled {
+            background-color: var(--color-teal);
+            color: white;
+        }
+
+        /* Smaller log panel */
+        .log-panel {
+            background-color: var(--color-cream);
+            padding: 15px;
+            border-radius: 10px;
+            height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .log-entry {
+            margin: 3px 0;
+            padding: 3px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .producer-log {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid var(--color-producer);
+        }
+
+        .consumer-log {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 3px solid var(--color-consumer);
+        }
+
+        .system-log {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-left: 3px solid #2196F3;
+        }
+
+        /* Smaller actor icons */
+        .actor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .actor-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .producer-icon {
+            background-color: var(--color-producer);
+            color: white;
+        }
+
+        .consumer-icon {
+            background-color: var(--color-consumer);
+            color: white;
+        }
+
+        /* Compact slider layout */
+        .slider-container {
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        /* Smaller control buttons */
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            flex: 1;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn {
+            background-color: var(--color-producer);
+            color: white;
+        }
+
+        .stop-btn {
+            background-color: var(--color-consumer);
+            color: white;
+        }
+
+        .reset-btn {
+            background-color: var(--color-teal);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Compact stats cards */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background-color: var(--color-cream);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        /* More compact explanation section */
+        .explanation {
+            background-color: var(--color-cream);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .explanation p, .explanation li {
+            margin-bottom: 8px;
+        }
+
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 10px 0;
+            text-align: left;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1000px) {
+            .simulation-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="logo" href="../index.html">OS VISUALIZER</a>
+        <ul>
+            <li><button onclick="location.href = '../index.html';" class="button">Home</button></li>
+            <li class="dropdown">
+                <button class="button">Algorithms</button>
+                <div class="dropdown-content">
+                    <a href="../process_scheduling/process.html">Process Scheduling</a>
+                    <a href="../process_sync/home.html">Process Synchronization</a>
+                    <a href="../Bankers/bankers.html">Bankers Algorithm</a>
+                    <a href="../mft_mvt/Fit.html">Fit Algorithms</a>
+                    <a href="../page_replacement/page_replacement_home.html">Page Replacement</a>
+                    <a href="../Disk/disk.html">Disk Scheduling</a>
+                    <a href="../file_allocation/file.html">File Allocation</a>
+                    <a href="../mft_mvt/MVFT.html">MFT and MVT</a>
+                </div>
+            </li>
+            <li><button class="button" onclick="location.href = '../about.html';">About</button></li>
+            <li><button class="button" onclick="location.href = '../references.html';">References</button></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Producer-Consumer Problem Simulation</h1>
+
+        <div class="content">
+            <div class="simulation-container">
+                <div class="control-panel">
+                    <h2>Control Panel</h2>
+                    <div class="slider-container">
+                        <label>Buffer Size:</label>
+                        <input type="range" id="bufferSizeSlider" min="3" max="10" value="5">
+                        <div class="slider-label">
+                            <span>3</span>
+                            <span id="bufferSizeValue">5</span>
+                            <span>10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Producer Speed:</label>
+                        <input type="range" id="producerSpeedSlider" min="1" max="10" value="5">
+                        <div class="slider-label">
+                            <span>Slow</span>
+                            <span id="producerSpeedValue">5</span>
+                            <span>Fast</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Consumer Speed:</label>
+                        <input type="range" id="consumerSpeedSlider" min="1" max="10" value="3">
+                        <div class="slider-label">
+                            <span>Slow</span>
+                            <span id="consumerSpeedValue">3</span>
+                            <span>Fast</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-buttons">
+                        <button id="startBtn" class="control-btn start-btn">Start</button>
+                        <button id="stopBtn" class="control-btn stop-btn" disabled>Stop</button>
+                        <button id="resetBtn" class="control-btn reset-btn">Reset</button>
+                    </div>
+                    
+                    <div class="actor">
+                        <div class="actor-icon producer-icon">P</div>
+                        <div>Producer</div>
+                    </div>
+                    
+                    <div class="actor">
+                        <div class="actor-icon consumer-icon">C</div>
+                        <div>Consumer</div>
+                    </div>
+                </div>
+                
+                <div class="buffer-display">
+                    <h2>Shared Buffer</h2>
+                    <div id="bufferContainer">
+                        <div class="buffer-slots" id="bufferSlots">
+                            <!-- Buffer slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="stats-panel">
+                        <div class="stat-card">
+                            <div>Items Produced</div>
+                            <div class="stat-value" id="producedCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Items Consumed</div>
+                            <div class="stat-value" id="consumedCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Buffer Utilization</div>
+                            <div class="stat-value" id="bufferUtilization">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Current Buffer State</div>
+                            <div class="stat-value" id="bufferState">Empty</div>
+                        </div>
+                    </div>
+                    
+                    <div id="semaphoreStatus">
+                        <h3>Semaphore Values</h3>
+                        <div style="display: flex; justify-content: space-around; margin-top: 8px;">
+                            <div>
+                                <strong>Empty:</strong> <span id="emptySemaphore">5</span>
+                            </div>
+                            <div>
+                                <strong>Full:</strong> <span id="fullSemaphore">0</span>
+                            </div>
+                            <div>
+                                <strong>Mutex:</strong> <span id="mutexSemaphore">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="log-panel">
+                    <h2>Event Log</h2>
+                    <div id="logEntries">
+                        <div class="log-entry system-log">System initialized. Ready to start simulation.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="explanation">
+                <h2>The Producer-Consumer Problem Explained</h2>
+                <p>The Producer-Consumer problem demonstrates the challenges of coordinating processes that share bounded resources.</p>
+                
+                <h3>The Problem:</h3>
+                <ul>
+                    <li>A producer process generates data items and stores them in a buffer.</li>
+                    <li>A consumer process takes data items from the buffer and processes them.</li>
+                    <li>The buffer has a fixed size, requiring synchronization to prevent:
+                        <ul>
+                            <li><b>Buffer overflow:</b> Producer trying to add items to a full buffer</li>
+                            <li><b>Buffer underflow:</b> Consumer trying to remove items from an empty buffer</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3>Solution using Semaphores:</h3>
+                <p>Three semaphores manage synchronization:</p>
+                <ul>
+                    <li><b>empty:</b> Counts empty buffer slots (initialized to buffer size)</li>
+                    <li><b>full:</b> Counts filled buffer slots (initialized to 0)</li>
+                    <li><b>mutex:</b> Binary semaphore for mutual exclusion (initialized to 1)</li>
+                </ul>
+                
+                <div class="code-example">
+<pre>// Producer process pseudocode
+while (true) {
+    item = produce_item();
+    wait(empty);    // Wait if no empty slots
+    wait(mutex);    // Enter critical section
+    
+    add_item_to_buffer(item);
+    
+    signal(mutex);  // Exit critical section
+    signal(full);   // Signal consumer that item is available
+}
+
+// Consumer process pseudocode
+while (true) {
+    wait(full);     // Wait if no items available
+    wait(mutex);    // Enter critical section
+    
+    item = remove_item_from_buffer();
+    
+    signal(mutex);  // Exit critical section
+    signal(empty);  // Signal producer that slot is available
+    consume_item(item);
+}</pre>
+                </div>
+            </div>
+            
+            <button class="button" onclick="location.href='index.html';" style="margin-top: 15px; width: 100%;">Back to Problems</button>
+        </div>
+    </div>
+    <script>
+        // Producer-Consumer Problem Simulation
+
+        // Global variables
+        let bufferSize = 5;
+        let producerSpeed = 5;
+        let consumerSpeed = 3;
+        let buffer = [];
+        let running = false;
+        let producerInterval;
+        let consumerInterval;
+        let producedCount = 0;
+        let consumedCount = 0;
+        let totalBufferChecks = 0;
+        let totalBufferUsed = 0;
+
+        // Semaphores
+        let empty = 5;  // Initially all slots are empty
+        let full = 0;   // Initially no slots are full
+        let mutex = 1;  // Binary semaphore for mutual exclusion
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize UI
+            updateBufferDisplay();
+            setupEventListeners();
+            
+            // Add to log
+            addToLog("System is ready. Set parameters and click Start to begin simulation.", "system");
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Buffer size slider
+            document.getElementById('bufferSizeSlider').addEventListener('input', function() {
+                bufferSize = parseInt(this.value);
+                document.getElementById('bufferSizeValue').textContent = bufferSize;
+                resetSimulation();
+            });
+            
+            // Producer speed slider
+            document.getElementById('producerSpeedSlider').addEventListener('input', function() {
+                producerSpeed = parseInt(this.value);
+                document.getElementById('producerSpeedValue').textContent = producerSpeed;
+                if (running) {
+                    updateIntervals();
+                }
+            });
+            
+            // Consumer speed slider
+            document.getElementById('consumerSpeedSlider').addEventListener('input', function() {
+                consumerSpeed = parseInt(this.value);
+                document.getElementById('consumerSpeedValue').textContent = consumerSpeed;
+                if (running) {
+                    updateIntervals();
+                }
+            });
+            
+            // Control buttons
+            document.getElementById('startBtn').addEventListener('click', startSimulation);
+            document.getElementById('stopBtn').addEventListener('click', stopSimulation);
+            document.getElementById('resetBtn').addEventListener('click', resetSimulation);
+        }
+
+        // Update buffer display based on current state
+        function updateBufferDisplay() {
+            const bufferSlots = document.getElementById('bufferSlots');
+            bufferSlots.innerHTML = '';
+            
+            for (let i = 0; i < bufferSize; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'buffer-slot';
+                slot.id = `slot-${i}`;
+                
+                if (i < buffer.length) {
+                    slot.classList.add('filled');
+                    slot.textContent = buffer[i];
+                }
+                
+                bufferSlots.appendChild(slot);
+            }
+            
+            // Update semaphore displays
+            document.getElementById('emptySemaphore').textContent = empty;
+            document.getElementById('fullSemaphore').textContent = full;
+            document.getElementById('mutexSemaphore').textContent = mutex;
+            
+            // Update buffer state text
+            let stateText = "Empty";
+            if (buffer.length === bufferSize) {
+                stateText = "Full";
+            } else if (buffer.length > 0) {
+                stateText = "Partial";
+            }
+            document.getElementById('bufferState').textContent = stateText;
+            
+            // Update stats
+            document.getElementById('producedCount').textContent = producedCount;
+            document.getElementById('consumedCount').textContent = consumedCount;
+            
+            // Calculate buffer utilization
+            if (totalBufferChecks > 0) {
+                const utilization = Math.round((totalBufferUsed / totalBufferChecks) * 100);
+                document.getElementById('bufferUtilization').textContent = `${utilization}%`;
+            }
+        }
+
+        // Add entry to log panel
+        function addToLog(message, type) {
+            const logEntries = document.getElementById('logEntries');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}-log`;
+            
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            logEntries.appendChild(entry);
+            logEntries.scrollTop = logEntries.scrollHeight;
+        }
+
+        // Producer function
+        function produce() {
+            if (!running) return;
+            
+            // Wait if buffer is full (empty semaphore is 0)
+            if (empty <= 0) {
+                addToLog("Producer waiting: Buffer is full", "producer");
+                return;
+            }
+            
+            // Wait on empty semaphore
+            empty--;
+            
+            // Wait on mutex (enter critical section)
+            if (mutex <= 0) {
+                addToLog("Producer waiting: Mutex locked", "producer");
+                empty++; // Roll back empty decrement
+                return;
+            }
+            
+            mutex = 0; // Acquire mutex
+            
+            // Critical section: Add item to buffer
+            const item = Math.floor(Math.random() * 90) + 10; // Generate random 2-digit number
+            buffer.push(item);
+            producedCount++;
+            
+            addToLog(`Producer added item: ${item}`, "producer");
+            
+            // Update stats
+            totalBufferChecks++;
+            totalBufferUsed += buffer.length;
+            
+            // Release mutex
+            mutex = 1;
+            
+            // Signal consumer that an item is available
+            full++;
+            
+            // Update display
+            updateBufferDisplay();
+            
+            // Visual animation effect for the newly added item
+            const slotIndex = buffer.length - 1;
+            if (slotIndex >= 0) {
+                const slot = document.getElementById(`slot-${slotIndex}`);
+                if (slot) {
+                    slot.style.backgroundColor = 'var(--color-producer)';
+                    setTimeout(() => {
+                        if (slot) {
+                            slot.style.backgroundColor = '';
+                        }
+                    }, 300);
+                }
+            }
+        }
+
+        // Consumer function
+        function consume() {
+            if (!running) return;
+            
+            // Wait if buffer is empty (full semaphore is 0)
+            if (full <= 0) {
+                addToLog("Consumer waiting: Buffer is empty", "consumer");
+                return;
+            }
+            
+            // Wait on full semaphore
+            full--;
+            
+            // Wait on mutex (enter critical section)
+            if (mutex <= 0) {
+                addToLog("Consumer waiting: Mutex locked", "consumer");
+                full++; // Roll back full decrement
+                return;
+            }
+            
+            mutex = 0; // Acquire mutex
+            
+            // Critical section: Remove item from buffer
+            const item = buffer.shift();
+            consumedCount++;
+            
+            addToLog(`Consumer removed item: ${item}`, "consumer");
+            
+            // Update stats
+            totalBufferChecks++;
+            totalBufferUsed += buffer.length;
+            
+            // Release mutex
+            mutex = 1;
+            
+            // Signal producer that a slot is available
+            empty++;
+            
+            // Update display
+            updateBufferDisplay();
+            
+            // Visual effect for consumption
+            const slots = document.querySelectorAll('.buffer-slot');
+            if (slots.length > 0) {
+                const firstSlot = slots[0];
+                firstSlot.style.backgroundColor = 'var(--color-consumer)';
+                setTimeout(() => {
+                    firstSlot.style.backgroundColor = '';
+                }, 300);
+            }
+        }
+
+        // Start simulation
+        function startSimulation() {
+            if (running) return;
+            
+            running = true;
+            
+            // Update button states
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            
+            // Add to log
+            addToLog("Simulation started", "system");
+            
+            // Set up intervals for producer and consumer
+            updateIntervals();
+        }
+
+        // Stop simulation
+        function stopSimulation() {
+            if (!running) return;
+            
+            running = false;
+            
+            // Clear intervals
+            clearInterval(producerInterval);
+            clearInterval(consumerInterval);
+            
+            // Update button states
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            // Add to log
+            addToLog("Simulation stopped", "system");
+        }
+
+        // Reset simulation
+        function resetSimulation() {
+            // Stop simulation if running
+            if (running) {
+                stopSimulation();
+            }
+            
+            // Reset variables
+            buffer = [];
+            producedCount = 0;
+            consumedCount = 0;
+            totalBufferChecks = 0;
+            totalBufferUsed = 0;
+            
+            // Reset semaphores
+            empty = bufferSize;
+            full = 0;
+            mutex = 1;
+            
+            // Update display
+            updateBufferDisplay();
+            
+            // Add to log
+            addToLog("Simulation reset", "system");
+        }
+
+        // Update intervals based on speed settings
+        function updateIntervals() {
+            // Clear existing intervals
+            clearInterval(producerInterval);
+            clearInterval(consumerInterval);
+            
+            // Calculate interval times based on speed (inverse relationship)
+            const producerIntervalTime = Math.floor(1000 / producerSpeed);
+            const consumerIntervalTime = Math.floor(1000 / consumerSpeed);
+            
+            // Set new intervals
+            producerInterval = setInterval(produce, producerIntervalTime);
+            consumerInterval = setInterval(consume, consumerIntervalTime);
+            
+            // Add to log
+            addToLog(`Speed updated - Producer: ${producerSpeed}, Consumer: ${consumerSpeed}`, "system");
+        }
+
+        // Cleanup function for page unload
+        window.addEventListener('beforeunload', function() {
+            if (running) {
+                clearInterval(producerInterval);
+                clearInterval(consumerInterval);
+            }
+        });
+    </script>
+</body>
+</html>

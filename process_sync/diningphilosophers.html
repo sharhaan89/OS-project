@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dining Philosophers Simulation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <style>
+    :root {
+      --bg-color: #B2EBE0;
+      --text-color: #2A4747;
+      --card-bg: #ffffff;
+      --primary: #FFBA49;
+      --primary-hover: #ffa726;
+      --thinking: #FFECB3;
+      --hungry: #FFCDD2;
+      --eating: #C8E6C9;
+      --log-bg: #FFF8E1;
+      --fork-color: #2A4747;
+      --fork-used: #B0BEC5;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      max-width: 900px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      color: var(--text-color);
+      font-weight: 600;
+    }
+
+    .control-panel {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .philosophers-container {
+      position: relative;
+      width: 350px;
+      height: 350px;
+      margin: 40px auto;
+      border-radius: 50%;
+      background-color: rgba(178, 235, 224, 0.2);
+      border: 1px dashed var(--text-color);
+    }
+
+    .table {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-color: #F5F5F5;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    .philosopher {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--thinking);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: absolute;
+      z-index: 3;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .philosopher.thinking { 
+      background-color: var(--thinking); 
+    }
+    
+    .philosopher.hungry { 
+      background-color: var(--hungry); 
+    }
+    
+    .philosopher.eating { 
+      background-color: var(--eating);
+      transform: scale(1.1);
+    }
+
+    .fork {
+      position: absolute;
+      width: 8px;
+      height: 40px;
+      background: var(--fork-color);
+      border-radius: 4px;
+      transform-origin: center;
+      z-index: 2;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .fork.used {
+      background-color: var(--fork-used);
+    }
+
+    .button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      min-width: 100px;
+    }
+
+    .button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .stats-item {
+      text-align: center;
+    }
+
+    .stats-value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .stats-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .log {
+      background-color: var(--log-bg);
+      border-radius: 10px;
+      padding: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      margin-top: 20px;
+      font-size: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .log-entry {
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 15px 0;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+
+    .speed-control {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .philosophers-container {
+        width: 300px;
+        height: 300px;
+      }
+      
+      .table {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .philosopher {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dining Philosophers Problem</h1>
+    
+    <div class="control-panel">
+      <button id="startBtn" class="button">Start</button>
+      <button id="pauseBtn" class="button" disabled>Pause</button>
+      <button id="resetBtn" class="button">Reset</button>
+    </div>
+    
+    <div class="speed-control">
+      <label for="speed">Simulation Speed:</label>
+      <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+      <span id="speedValue">1x</span>
+    </div>
+
+    <div class="philosophers-container" id="philosophers">
+      <div class="table"></div>
+      <!-- Philosophers and forks will be added by JavaScript -->
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: var(--thinking)"></div>
+        <span>Thinking</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: var(--hungry)"></div>
+        <span>Hungry</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: var(--eating)"></div>
+        <span>Eating</span>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <div class="stats-item">
+        <div class="stats-value" id="thinking-count">0</div>
+        <div class="stats-label">Thinking</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value" id="hungry-count">0</div>
+        <div class="stats-label">Hungry</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value" id="eating-count">0</div>
+        <div class="stats-label">Eating</div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-value" id="deadlock-count">0</div>
+        <div class="stats-label">Deadlocks</div>
+      </div>
+    </div>
+
+    <div class="log" id="log">
+      <div class="log-entry">Simulation ready. Press Start to begin.</div>
+    </div>
+  </div>
+
+  <script>
+    const NUM_PHILOSOPHERS = 5;
+    let philosopherStates = Array(NUM_PHILOSOPHERS).fill('thinking');
+    let forks = Array(NUM_PHILOSOPHERS).fill(false);
+    let intervals = [];
+    let running = false;
+    let simulationSpeed = 1;
+    let stats = {
+      thinkingTime: Array(NUM_PHILOSOPHERS).fill(0),
+      hungryTime: Array(NUM_PHILOSOPHERS).fill(0),
+      eatingTime: Array(NUM_PHILOSOPHERS).fill(0),
+      deadlockCount: 0,
+      lastDeadlockCheck: 0
+    };
+    let startTime = null;
+    let deadlockTimer = null;
+
+    const container = document.getElementById("philosophers");
+    const logPanel = document.getElementById("log");
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const speedSlider = document.getElementById("speed");
+    const speedValue = document.getElementById("speedValue");
+    
+    // UI Element references for stats
+    const thinkingCountEl = document.getElementById("thinking-count");
+    const hungryCountEl = document.getElementById("hungry-count");
+    const eatingCountEl = document.getElementById("eating-count");
+    const deadlockCountEl = document.getElementById("deadlock-count");
+
+    // Event Listeners
+    startBtn.addEventListener("click", startSimulation);
+    pauseBtn.addEventListener("click", pauseSimulation);
+    resetBtn.addEventListener("click", resetSimulation);
+    speedSlider.addEventListener("input", updateSpeed);
+
+    function updateSpeed() {
+      simulationSpeed = parseFloat(speedSlider.value);
+      speedValue.textContent = `${simulationSpeed}x`;
+      
+      if (running) {
+        // Restart intervals with new speed
+        intervals.forEach(clearInterval);
+        intervals = [];
+        for (let i = 0; i < NUM_PHILOSOPHERS; i++) {
+          intervals[i] = setInterval(
+            () => philosopherCycle(i), 
+            (1000 + Math.random() * 1000) / simulationSpeed
+          );
+        }
+      }
+    }
+
+    function log(message) {
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logPanel.appendChild(entry);
+      logPanel.scrollTop = logPanel.scrollHeight;
+      
+      // Limit log entries
+      while (logPanel.children.length > 50) {
+        logPanel.removeChild(logPanel.firstChild);
+      }
+    }
+
+    function updateUI() {
+      // Clear container (except table)
+      while (container.children.length > 1) {
+        container.removeChild(container.lastChild);
+      }
+
+      // Update philosophers
+      for (let i = 0; i < NUM_PHILOSOPHERS; i++) {
+        const angle = (i / NUM_PHILOSOPHERS) * 2 * Math.PI - Math.PI / 2;
+        const x = 175 + 140 * Math.cos(angle);
+        const y = 175 + 140 * Math.sin(angle);
+
+        const pDiv = document.createElement("div");
+        pDiv.className = `philosopher ${philosopherStates[i]}`;
+        pDiv.style.left = `${x - 30}px`;
+        pDiv.style.top = `${y - 30}px`;
+        pDiv.innerText = `P${i}`;
+        container.appendChild(pDiv);
+      }
+
+      // Update forks
+      for (let i = 0; i < NUM_PHILOSOPHERS; i++) {
+        const angle = ((i + 0.5) / NUM_PHILOSOPHERS) * 2 * Math.PI - Math.PI / 2;
+        const x = 175 + 95 * Math.cos(angle);
+        const y = 175 + 95 * Math.sin(angle);
+
+        const fDiv = document.createElement("div");
+        fDiv.className = forks[i] ? "fork used" : "fork";
+        fDiv.style.left = `${x - 4}px`;
+        fDiv.style.top = `${y - 20}px`;
+        fDiv.style.transform = `rotate(${angle + Math.PI/2}rad)`;
+        container.appendChild(fDiv);
+      }
+
+      // Update stats display
+      let thinkingCount = philosopherStates.filter(state => state === 'thinking').length;
+      let hungryCount = philosopherStates.filter(state => state === 'hungry').length;
+      let eatingCount = philosopherStates.filter(state => state === 'eating').length;
+      
+      thinkingCountEl.textContent = thinkingCount;
+      hungryCountEl.textContent = hungryCount;
+      eatingCountEl.textContent = eatingCount;
+      deadlockCountEl.textContent = stats.deadlockCount;
+    }
+
+    function leftFork(i) {
+      return i;
+    }
+
+    function rightFork(i) {
+      return (i + 1) % NUM_PHILOSOPHERS;
+    }
+
+    function tryToEat(i) {
+      if (philosopherStates[i] === "hungry" &&
+          !forks[leftFork(i)] &&
+          !forks[rightFork(i)]) {
+
+        forks[leftFork(i)] = true;
+        forks[rightFork(i)] = true;
+        philosopherStates[i] = "eating";
+        log(`Philosopher ${i} starts eating.`);
+
+        // Eating duration varies with simulation speed
+        setTimeout(() => {
+          if (running && philosopherStates[i] === "eating") {
+            forks[leftFork(i)] = false;
+            forks[rightFork(i)] = false;
+            philosopherStates[i] = "thinking";
+            log(`Philosopher ${i} finished eating and starts thinking.`);
+            updateUI();
+          }
+        }, 2000 / simulationSpeed);
+      }
+    }
+
+    function philosopherCycle(i) {
+      if (!running) return;
+
+      if (philosopherStates[i] === "thinking") {
+        // Probability adjusted by speed
+        if (Math.random() < 0.3 * simulationSpeed) {
+          philosopherStates[i] = "hungry";
+          log(`Philosopher ${i} is hungry.`);
+        }
+      } else if (philosopherStates[i] === "hungry") {
+        tryToEat(i);
+      }
+      
+      updateUI();
+      checkForDeadlock();
+    }
+
+    function checkForDeadlock() {
+      // Only check every 3 seconds to avoid too frequent checks
+      const now = Date.now();
+      if (now - stats.lastDeadlockCheck < 3000) return;
+      stats.lastDeadlockCheck = now;
+      
+      // Deadlock condition: All philosophers hungry and can't eat
+      const allHungry = philosopherStates.every((state, i) => {
+        if (state !== "hungry") return false;
+        
+        // Check if philosopher can grab forks
+        const leftIdx = leftFork(i);
+        const rightIdx = rightFork(i);
+        return forks[leftIdx] || forks[rightIdx]; // Can't grab both forks
+      });
+
+      if (allHungry && philosopherStates.filter(s => s === "hungry").length > 1) {
+        stats.deadlockCount++;
+        log("DEADLOCK DETECTED! Resolving by asking a philosopher to release forks...");
+        
+        // Resolve deadlock by randomly making one philosopher release a fork
+        const randomPhil = Math.floor(Math.random() * NUM_PHILOSOPHERS);
+        
+        if (forks[leftFork(randomPhil)]) {
+          forks[leftFork(randomPhil)] = false;
+          log(`Philosopher ${randomPhil} released their left fork to resolve deadlock.`);
+        } else if (forks[rightFork(randomPhil)]) {
+          forks[rightFork(randomPhil)] = false;
+          log(`Philosopher ${randomPhil} released their right fork to resolve deadlock.`);
+        }
+        
+        updateUI();
+      }
+    }
+
+    function startSimulation() {
+      if (running) return;
+      running = true;
+      
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+      
+      log("Simulation started.");
+      
+      // Record start time
+      startTime = Date.now();
+      
+      // Create intervals for each philosopher with adjusted speed
+      for (let i = 0; i < NUM_PHILOSOPHERS; i++) {
+        intervals[i] = setInterval(
+          () => philosopherCycle(i), 
+          (1000 + Math.random() * 1000) / simulationSpeed
+        );
+      }
+      
+      updateUI();
+    }
+
+    function pauseSimulation() {
+      running = false;
+      
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      startBtn.textContent = "Resume";
+      
+      intervals.forEach(clearInterval);
+      intervals = [];
+      
+      log("Simulation paused.");
+    }
+
+    function resetSimulation() {
+      // Clear all timers
+      intervals.forEach(clearInterval);
+      intervals = [];
+      if (deadlockTimer) clearTimeout(deadlockTimer);
+      
+      // Reset state
+      running = false;
+      philosopherStates.fill("thinking");
+      forks.fill(false);
+      stats = {
+        thinkingTime: Array(NUM_PHILOSOPHERS).fill(0),
+        hungryTime: Array(NUM_PHILOSOPHERS).fill(0),
+        eatingTime: Array(NUM_PHILOSOPHERS).fill(0),
+        deadlockCount: 0,
+        lastDeadlockCheck: 0
+      };
+      
+      // Reset UI
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      startBtn.textContent = "Start";
+      
+      // Clear log except for first message
+      while (logPanel.children.length > 0) {
+        logPanel.removeChild(logPanel.firstChild);
+      }
+      log("Simulation reset. Press Start to begin.");
+      
+      updateUI();
+    }
+
+    // Initialize UI
+    updateUI();
+  </script>
+</body>
+</html>
