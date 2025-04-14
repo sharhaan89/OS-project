@@ -78,6 +78,32 @@
     .button:hover {
       background-color: #ffa726;
     }
+    
+    .problem-description {
+      background-color: #E3F2FD;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    
+    .pseudocode {
+      background-color: #ECEFF1;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: left;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    
+    .section-title {
+      margin-top: 30px;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #B2EBE0;
+      padding-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -99,6 +125,94 @@
 
     <div class="log" id="log">
       <div class="log-entry">Simulation ready.</div>
+    </div>
+    
+    <h2 class="section-title">The Sleeping Barber Problem</h2>
+    <div class="problem-description">
+      <p>The Sleeping Barber Problem is a classic computer science problem that illustrates challenges in synchronization and concurrency.</p>
+      <p><strong>Problem Description:</strong></p>
+      <ul>
+        <li>A barbershop has one barber, one barber chair, and several waiting chairs.</li>
+        <li>When there are no customers, the barber sleeps in the barber chair.</li>
+        <li>When a customer arrives, they must wake the barber if they are sleeping.</li>
+        <li>If the barber is busy but waiting chairs are available, the customer sits and waits.</li>
+        <li>If all chairs are full, the customer leaves.</li>
+        <li>After finishing a haircut, the barber checks for waiting customers. If none, goes back to sleep.</li>
+      </ul>
+      <p>This problem represents real-world scenarios where resources (barber) must be synchronized with requests (customers) using semaphores or similar concurrency mechanisms.</p>
+    </div>
+    
+    <h2 class="section-title">Solution Approach</h2>
+    <div class="problem-description">
+      <p>In a proper concurrent implementation, the solution typically uses semaphores to coordinate between barber and customer threads:</p>
+      <ol>
+        <li><strong>Semaphores used:</strong>
+          <ul>
+            <li><code>customers</code>: Counts waiting customers (initialized to 0)</li>
+            <li><code>barber</code>: Signals if barber is available (initialized to 0)</li>
+            <li><code>mutex</code>: Protects access to the waiting counter (initialized to 1)</li>
+          </ul>
+        </li>
+        <li><strong>Barber's workflow:</strong>
+          <ul>
+            <li>Wait for customers (P(customers)) - sleeps if none available</li>
+            <li>Signal barber is ready (V(barber))</li>
+            <li>Cut hair</li>
+            <li>Check for more customers</li>
+          </ul>
+        </li>
+        <li><strong>Customer's workflow:</strong>
+          <ul>
+            <li>Enter mutex to check/update waiting count (P(mutex))</li>
+            <li>If chairs are full, leave; otherwise take a seat</li>
+            <li>Signal arrival (V(customers))</li>
+            <li>Release mutex (V(mutex))</li>
+            <li>Wait for barber (P(barber))</li>
+            <li>Get haircut</li>
+          </ul>
+        </li>
+      </ol>
+      <p>In this web simulation, we use JavaScript timeouts and callbacks to simulate the concurrent behavior without actual threads.</p>
+    </div>
+    
+    <h2 class="section-title">Pseudocode Implementation</h2>
+    <div class="pseudocode">
+<strong>// Semaphores</strong>
+semaphore customers = 0  // Counts waiting customers
+semaphore barber = 0     // Signals barber availability
+semaphore mutex = 1      // Protects access to waiting counter
+int waiting = 0          // Customers currently waiting
+
+<strong>// Barber Thread</strong>
+function barber() {
+  while (true) {
+    customers.P()        // Wait for a customer (sleep if none)
+    mutex.P()            // Enter critical section
+    waiting = waiting - 1// Reduce waiting count
+    barber.V()           // Signal barber is ready
+    mutex.V()            // Exit critical section
+    cutHair()            // Cut hair (working)
+  }
+}
+
+<strong>// Customer Thread</strong>
+function customer() {
+  mutex.P()              // Enter critical section
+  if (waiting < CHAIRS) {// If chairs available
+    waiting = waiting + 1// Increment waiting count
+    customers.V()        // Signal arrival to barber
+    mutex.V()            // Exit critical section
+    barber.P()           // Wait for barber
+    getHaircut()         // Get haircut
+  } else {
+    mutex.V()            // Exit critical section
+    leaveShop()          // Leave if no seats
+  }
+}
+
+<strong>// Note:</strong> In semaphore operations:
+// P() is "wait" operation (decrements semaphore)
+// V() is "signal" operation (increments semaphore)
     </div>
   </div>
 

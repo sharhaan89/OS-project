@@ -18,9 +18,10 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
 
-    h1, h2 {
+    h1, h2, h3 {
       color: #2A4747;
     }
 
@@ -77,6 +78,34 @@
     .semaphores {
       margin-top: 10px;
     }
+    
+    pre {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    
+    .problem-description {
+      background-color: #e8f5e9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .solution-description {
+      background-color: #e3f2fd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .code-section {
+      background-color: #fff3e0;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -114,6 +143,100 @@
     <div class="log-entry system-log">System initialized.</div>
   </div>
 </div>
+
+<div class="container">
+  <h1>The Readers-Writers Problem</h1>
+  
+  <div class="problem-description">
+    <h3>Problem Description</h3>
+    <p>The Readers-Writers problem is a classic synchronization problem in operating systems and concurrent programming. It involves multiple processes (or threads) that need to access a shared resource, where:</p>
+    <ul>
+      <li><strong>Readers</strong>: Processes that only read the shared resource and do not modify it.</li>
+      <li><strong>Writers</strong>: Processes that modify the shared resource.</li>
+    </ul>
+    
+    <p><strong>Requirements:</strong></p>
+    <ol>
+      <li>Multiple readers can access the shared resource simultaneously (since they don't modify it).</li>
+      <li>Only one writer can access the shared resource at a time (to prevent data corruption).</li>
+      <li>When a writer is accessing the resource, no reader can access it.</li>
+    </ol>
+    
+    <p><strong>Challenges:</strong></p>
+    <ul>
+      <li>Avoiding deadlocks (situations where processes wait indefinitely)</li>
+      <li>Preventing starvation (where either readers or writers wait indefinitely)</li>
+      <li>Ensuring fair access to the shared resource</li>
+    </ul>
+  </div>
+  
+  <div class="solution-description">
+    <h3>Solution Explanation</h3>
+    <p>This simulation implements a solution with the following characteristics:</p>
+    
+    <h4>Approach Used:</h4>
+    <p>The implementation uses semaphores to control access to the shared resource:</p>
+    <ul>
+      <li><strong>readCount</strong>: Tracks the number of readers currently accessing the resource</li>
+      <li><strong>writeLock</strong>: Binary semaphore (0 or 1) that controls write access</li>
+      <li><strong>writerBusy</strong>: Flag indicating if a writer is currently active</li>
+    </ul>
+    
+    <h4>Reader Process:</h4>
+    <ol>
+      <li>Check if no writer is active (writeLock === 0 && !writerBusy)</li>
+      <li>If safe to read, increment readCount and begin reading</li>
+      <li>When done reading, decrement readCount</li>
+      <li>If readCount becomes 0, it signals that writers can now access the resource</li>
+    </ol>
+    
+    <h4>Writer Process:</h4>
+    <ol>
+      <li>Check if no readers are active (readCount === 0) and no other writer is active (writeLock === 0)</li>
+      <li>If safe to write, set writeLock to 1 and begin writing</li>
+      <li>When done writing, set writeLock back to 0</li>
+      <li>Move to the next writer in the queue</li>
+    </ol>
+    
+    <h4>Priority Mechanism:</h4>
+    <p>This implementation uses a round-robin approach for writers. Writers are processed in a circular queue to ensure fairness among them. The current implementation doesn't give explicit priority to either readers or writers, but in heavy reader traffic, writers might experience starvation.</p>
+  </div>
+  
+  <div class="code-section">
+    <h3>Pseudocode Algorithm</h3>
+    <pre>
+// Semaphores and Variables
+readCount = 0            // Number of readers currently reading
+writeLock = 0            // Binary semaphore for write access (0: unlocked, 1: locked)
+writerBusy = false       // Flag to indicate if a writer is active
+
+// Reader Process
+function reader_process(reader_id):
+    while true:
+        if writeLock == 0 AND NOT writerBusy:
+            readCount++                      // Increment reader count
+            // Critical Section - Reading
+            perform_read_operation()
+            readCount--                      // Decrement reader count
+        else:
+            wait_for_access()                // Reader must wait
+
+// Writer Process
+function writer_process(writer_id):
+    while true:
+        if readCount == 0 AND writeLock == 0 AND NOT writerBusy:
+            writerBusy = true
+            writeLock = 1                    // Acquire write lock
+            // Critical Section - Writing
+            perform_write_operation()
+            writeLock = 0                    // Release write lock
+            writerBusy = false
+        else:
+            wait_for_access()                // Writer must wait
+    </pre>
+    
+    
+  </div>
 
 <script>
     let readCount = 0;
@@ -255,9 +378,7 @@
         startSimulation();
       }
     });
-    </script>
-    
-    
+</script>
 
 </body>
 </html>

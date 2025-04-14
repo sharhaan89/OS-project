@@ -7,367 +7,398 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-        :root {
-            --color-teal: #80CBC4;
-            --color-mint: #B2EBE0;
-            --color-cream: #FFF8E1;
-            --color-amber: #FFBA49;
-            --color-dark: #2A4747;
-            --color-producer: #4CAF50;
-            --color-consumer: #F44336;
-        }
+      :root {
+          --color-teal: #37a6a6;
+          --color-mint: #F8F9FA;
+          --color-cream: #FFF8E1;
+          --color-amber: #FFBA49;
+          --color-dark: #2A4747;
+          --color-producer: #4CAF50;
+          --color-consumer: #F44336;
+      }
 
-        body {
-            background-color: var(--color-mint);
-            color: var(--color-dark);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            font-size: 14px;
-        }
+      body {
+          background-color: var(--color-mint);
+          color: var(--color-dark);
+          font-family: 'Poppins', sans-serif;
+          margin: 0;
+          padding: 0;
+      }
 
-        /* Reduced nav bar height */
-        nav {
-            background-color: var(--color-amber);
-            height: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 3%;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
+      nav {
+          background-color: var(--color-teal);
+          height: auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 5%;
+          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
 
-        .logo {
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .logo:hover {
-            color: white;
-        }
+      .logo {
+          color: white;
+          font-size: 22px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+      }
 
-        ul {
-            list-style: none;
-            display: flex;
-            align-items: center;
-            padding: 0;
-            margin: 0;
-        }
+      .logo:hover {
+          color: white;
+          text-decoration: none;
+      }
 
-        li {
-            margin: 0 10px;
-        }
+      ul {
+          list-style: none;
+          display: flex;
+          align-items: center;
+          padding: 0;
+          margin: 0;
+      }
 
-        /* Smaller buttons */
-        .button {
-            background-color: var(--color-amber);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
+      li {
+          margin: 0 10px;
+      }
 
-        .button:hover {
-            background-color: var(--color-amber);
-            transform: translateY(-2px);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-        }
+      .button {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: white;
+          border: none;
+          padding: 10px 18px;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          text-decoration: none;
+      }
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            color: white;
-            min-width: 160px;
-            background: var(--color-amber);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 6px;
-            z-index: 1000;
-        }
+      .button:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-2px);
+      }
 
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+      .dropdown-content {
+          display: none;
+          position: absolute;
+          color: white;
+          min-width: 200px;
+          background: var(--color-teal);
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          z-index: 1000;
+          margin-top: 5px;
+      }
 
-        .dropdown-content a {
-            color: white;
-            padding: 8px 12px;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-            font-size: 14px;
-        }
+      .dropdown:hover .dropdown-content {
+          display: block;
+      }
 
-        .dropdown-content a:hover {
-            background: var(--color-amber);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-        }
+      .dropdown-content a {
+          color: white;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          transition: 0.3s;
+      }
 
-        /* Reduced container padding */
-        .container {
-            padding: 15px;
-            text-align: center;
-            max-width: 1200px;
-        }
+      .dropdown-content a:hover {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+      }
 
-        /* Compact content with less padding */
-        .content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
+      .container {
+          max-width: 1200px;
+          margin: 30px auto;
+          padding: 0;
+      }
 
-        /* Smaller headings */
-        h1 {
-            color: var(--color-dark);
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
+      .content {
+          background: white;
+          border-radius: 15px;
+          overflow: hidden;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          padding: 25px;
+          margin-bottom: 30px;
+      }
 
-        h2 {
-            color: var(--color-teal);
-            margin-top: 15px;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
+      h1 {
+          color: var(--color-dark);
+          font-size: 2.2rem;
+          margin-bottom: 20px;
+          font-weight: 600;
+          text-align: center;
+      }
 
-        h3 {
-            font-size: 1.2rem;
-            margin-top: 12px;
-        }
+      h2 {
+          color: var(--color-dark);
+          font-weight: 600;
+          font-size: 1.4rem;
+          margin: 25px 0 15px;
+          position: relative;
+          padding: 0;
+          text-align: left;
+      }
 
-        /* Improved grid layout for better space usage */
-        .simulation-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 15px;
-            margin: 15px 0;
-        }
+      h2::after {
+          content: '';
+          display: block;
+          width: 60px;
+          height: 3px;
+          background-color: var(--color-teal);
+          margin: 8px 0;
+      }
 
-        .control-panel {
-            background-color: var(--color-cream);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-        }
+      h3 {
+          font-size: 1.2rem;
+          margin-top: 12px;
+      }
 
-        .buffer-display {
-            background-color: var(--color-cream);
-            padding: 15px;
-            border-radius: 10px;
-            position: relative;
-        }
+      /* Simulation container layout */
+      .simulation-container {
+          display: grid;
+          grid-template-columns: 1fr 2fr 1fr;
+          gap: 15px;
+          margin: 15px 0;
+      }
 
-        /* Smaller buffer slots */
-        .buffer-slots {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            margin: 15px 0;
-            gap: 8px;
-        }
+      .control-panel {
+          background-color: var(--color-cream);
+          padding: 15px;
+          border-radius: 10px;
+          text-align: left;
+      }
 
-        .buffer-slot {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--color-teal);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            background-color: white;
-            transition: all 0.3s ease;
-        }
+      .buffer-display {
+          background-color: var(--color-cream);
+          padding: 15px;
+          border-radius: 10px;
+          position: relative;
+      }
 
-        .filled {
-            background-color: var(--color-teal);
-            color: white;
-        }
+      /* Buffer slots */
+      .buffer-slots {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          margin: 15px 0;
+          gap: 8px;
+      }
 
-        /* Smaller log panel */
-        .log-panel {
-            background-color: var(--color-cream);
-            padding: 15px;
-            border-radius: 10px;
-            height: 300px;
-            overflow-y: auto;
-            text-align: left;
-            font-size: 13px;
-        }
+      .buffer-slot {
+          width: 40px;
+          height: 40px;
+          border: 2px solid var(--color-teal);
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          background-color: white;
+          transition: all 0.3s ease;
+      }
 
-        .log-entry {
-            margin: 3px 0;
-            padding: 3px;
-            border-radius: 4px;
-            font-size: 13px;
-        }
+      .filled {
+          background-color: var(--color-teal);
+          color: white;
+      }
 
-        .producer-log {
-            background-color: rgba(76, 175, 80, 0.1);
-            border-left: 3px solid var(--color-producer);
-        }
+      /* Log panel */
+      .log-panel {
+          background-color: var(--color-cream);
+          border-radius: 10px;
+          padding: 15px;
+          height: 300px;
+          overflow-y: auto;
+          text-align: left;
+      }
 
-        .consumer-log {
-            background-color: rgba(244, 67, 54, 0.1);
-            border-left: 3px solid var(--color-consumer);
-        }
+      .log-entry {
+          font-size: 14px;
+          margin-bottom: 8px;
+          padding: 5px 10px;
+          border-radius: 5px;
+          background: white;
+      }
 
-        .system-log {
-            background-color: rgba(33, 150, 243, 0.1);
-            border-left: 3px solid #2196F3;
-        }
+      .producer-log { border-left: 4px solid var(--color-producer); }
+      .consumer-log { border-left: 4px solid var(--color-consumer); }
+      .system-log { border-left: 4px solid #2196F3; }
 
-        /* Smaller actor icons */
-        .actor {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 8px 0;
-        }
+      /* Actor icons */
+      .actor {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 8px 0;
+      }
 
-        .actor-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
+      .actor-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          margin-bottom: 5px;
+      }
 
-        .producer-icon {
-            background-color: var(--color-producer);
-            color: white;
-        }
+      .producer-icon {
+          background-color: var(--color-producer);
+          color: white;
+      }
 
-        .consumer-icon {
-            background-color: var(--color-consumer);
-            color: white;
-        }
+      .consumer-icon {
+          background-color: var(--color-consumer);
+          color: white;
+      }
 
-        /* Compact slider layout */
-        .slider-container {
-            margin: 10px 0;
-            width: 100%;
-        }
+      /* Slider layout */
+      .slider-container {
+          margin: 10px 0;
+          width: 100%;
+      }
 
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3px;
-            font-size: 13px;
-        }
+      .slider-label {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 3px;
+      }
 
-        input[type="range"] {
-            width: 100%;
-        }
+      input[type="range"] {
+          width: 100%;
+      }
 
-        /* Smaller control buttons */
-        .control-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-        }
+      /* Control buttons */
+      .control-buttons {
+          display: flex;
+          gap: 10px;
+          margin-top: 15px;
+      }
 
-        .control-btn {
-            flex: 1;
-            border: none;
-            border-radius: 6px;
-            padding: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+      .control-btn {
+          flex: 1;
+          border: none;
+          border-radius: 8px;
+          padding: 10px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
 
-        .start-btn {
-            background-color: var(--color-producer);
-            color: white;
-        }
+      .start-btn {
+          background-color: var(--color-producer);
+          color: white;
+      }
 
-        .stop-btn {
-            background-color: var(--color-consumer);
-            color: white;
-        }
+      .stop-btn {
+          background-color: var(--color-consumer);
+          color: white;
+      }
 
-        .reset-btn {
-            background-color: var(--color-teal);
-            color: white;
-        }
+      .reset-btn {
+          background-color: var(--color-teal);
+          color: white;
+      }
 
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
-        }
+      .control-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+      }
 
-        /* Compact stats cards */
-        .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
+      /* Stats cards */
+      .stats-panel {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          margin: 15px 0;
+      }
 
-        .stat-card {
-            background-color: var(--color-cream);
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 13px;
-        }
+      .stat-card {
+          background-color: var(--color-cream);
+          padding: 10px;
+          border-radius: 6px;
+          text-align: center;
+      }
 
-        .stat-value {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--color-dark);
-        }
+      .stat-value {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--color-dark);
+      }
 
-        /* More compact explanation section */
-        .explanation {
-            background-color: var(--color-cream);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            text-align: left;
-            font-size: 13px;
-        }
+      /* Explanation section */
+      .explanation {
+          background-color: var(--color-cream);
+          padding: 15px;
+          border-radius: 10px;
+          margin-top: 15px;
+          text-align: left;
+      }
 
-        .explanation p, .explanation li {
-            margin-bottom: 8px;
-        }
+      .explanation p, .explanation li {
+          margin-bottom: 8px;
+      }
 
-        .code-example {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 6px;
-            font-family: monospace;
-            margin: 10px 0;
-            text-align: left;
-            overflow-x: auto;
-            font-size: 12px;
-        }
+      .code-example {
+          background-color: #f5f5f5;
+          padding: 10px;
+          border-radius: 6px;
+          font-family: monospace;
+          margin: 10px 0;
+          text-align: left;
+          overflow-x: auto;
+      }
 
-        /* Responsive adjustments */
-        @media (max-width: 1000px) {
-            .simulation-container {
-                grid-template-columns: 1fr;
-            }
-        }
+      /* Responsive adjustments */
+      @media (max-width: 1000px) {
+          .simulation-container {
+              grid-template-columns: 1fr;
+          }
+      }
+      
+      /* Additional styling for problem description */
+      .problem-section {
+          background-color: var(--color-cream);
+          padding: 20px;
+          border-radius: 10px;
+          margin-top: 30px;
+          text-align: left;
+      }
+      
+      .problem-section h2 {
+          color: var(--color-dark);
+          margin-bottom: 20px;
+      }
+      
+      .solution-approaches {
+          margin-top: 20px;
+      }
+      
+      .algorithm-box {
+          background-color: white;
+          border-radius: 8px;
+          padding: 15px;
+          margin: 15px 0;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .algorithm-box h4 {
+          color: var(--color-teal);
+          margin-bottom: 10px;
+      }
+      
+      .note-box {
+          background-color: rgba(255, 186, 73, 0.2);
+          border-left: 4px solid var(--color-amber);
+          padding: 10px 15px;
+          margin: 15px 0;
+          border-radius: 0 8px 8px 0;
+      }
     </style>
 </head>
 <body>
@@ -498,56 +529,71 @@
                 </div>
             </div>
             
-            <div class="explanation">
-                <h2>The Producer-Consumer Problem Explained</h2>
-                <p>The Producer-Consumer problem demonstrates the challenges of coordinating processes that share bounded resources.</p>
+            <!-- New Problem Description Section -->
+            <div class="problem-section">
+                <h2>Detailed Problem Description</h2>
+                <p>The Producer-Consumer problem (also known as the Bounded Buffer problem) is a classic example of multi-process synchronization. It illustrates many of the core challenges in concurrent programming and operating systems design, including:</p>
                 
-                <h3>The Problem:</h3>
                 <ul>
-                    <li>A producer process generates data items and stores them in a buffer.</li>
-                    <li>A consumer process takes data items from the buffer and processes them.</li>
-                    <li>The buffer has a fixed size, requiring synchronization to prevent:
-                        <ul>
-                            <li><b>Buffer overflow:</b> Producer trying to add items to a full buffer</li>
-                            <li><b>Buffer underflow:</b> Consumer trying to remove items from an empty buffer</li>
-                        </ul>
-                    </li>
+                    <li><strong>Resource Sharing:</strong> Multiple processes accessing a shared resource (the buffer)</li>
+                    <li><strong>Process Coordination:</strong> Ensuring processes operate in a coordinated manner</li>
+                    <li><strong>Mutual Exclusion:</strong> Preventing simultaneous access to shared resources</li>
+                    <li><strong>Deadlock Avoidance:</strong> Preventing situations where processes indefinitely wait for each other</li>
+                    <li><strong>Race Conditions:</strong> Avoiding inconsistent states due to timing issues</li>
                 </ul>
+                <div class="note-box">
+                    <strong>Note:</strong> The correct ordering of semaphore operations is crucial. If the mutex is acquired before waiting on empty/full, a deadlock can occur if a process holds the mutex while waiting for buffer space to become available.
+                </div>
                 
-                <h3>Solution using Semaphores:</h3>
-                <p>Three semaphores manage synchronization:</p>
-                <ul>
-                    <li><b>empty:</b> Counts empty buffer slots (initialized to buffer size)</li>
-                    <li><b>full:</b> Counts filled buffer slots (initialized to 0)</li>
-                    <li><b>mutex:</b> Binary semaphore for mutual exclusion (initialized to 1)</li>
-                </ul>
-                
+                <h3>Pseudocode Algorithm: Complete Solution</h3>
                 <div class="code-example">
-<pre>// Producer process pseudocode
-while (true) {
-    item = produce_item();
-    wait(empty);    // Wait if no empty slots
-    wait(mutex);    // Enter critical section
-    
-    add_item_to_buffer(item);
-    
-    signal(mutex);  // Exit critical section
-    signal(full);   // Signal consumer that item is available
+<pre>// Shared data
+BUFFER_SIZE = N        // Fixed buffer size
+buffer[BUFFER_SIZE]    // Shared buffer
+in = 0                 // Position for next item to be inserted
+out = 0                // Position for next item to be removed
+count = 0              // Number of items in buffer
+
+// Semaphores
+semaphore mutex = 1    // For mutual exclusion
+semaphore empty = N    // Count of empty slots
+semaphore full = 0     // Count of filled slots
+
+// Producer process
+procedure Producer() {
+    while (true) {
+        item = produce_item()   // Generate new item
+        
+        wait(empty)             // Wait if no empty slots
+        wait(mutex)             // Enter critical section
+        
+        // Critical section - modify shared buffer
+        buffer[in] = item       // Add item to buffer
+        in = (in + 1) % BUFFER_SIZE  // Circular increment
+        count = count + 1       // Update item count
+        
+        signal(mutex)           // Exit critical section
+        signal(full)            // Signal that new item is available
+    }
 }
 
-// Consumer process pseudocode
-while (true) {
-    wait(full);     // Wait if no items available
-    wait(mutex);    // Enter critical section
-    
-    item = remove_item_from_buffer();
-    
-    signal(mutex);  // Exit critical section
-    signal(empty);  // Signal producer that slot is available
-    consume_item(item);
+// Consumer process
+procedure Consumer() {
+    while (true) {
+        wait(full)              // Wait if no items available
+        wait(mutex)             // Enter critical section
+        
+        // Critical section - modify shared buffer
+        item = buffer[out]      // Get item from buffer
+        out = (out + 1) % BUFFER_SIZE  // Circular increment
+        count = count - 1       // Update item count
+        
+        signal(mutex)           // Exit critical section
+        signal(empty)           // Signal that slot is now empty
+        
+        consume_item(item)      // Process the item
+    }
 }</pre>
-                </div>
-            </div>
             
             <button class="button" onclick="location.href='index.html';" style="margin-top: 15px; width: 100%;">Back to Problems</button>
         </div>
@@ -661,16 +707,16 @@ while (true) {
 
         // Add entry to log panel
         function addToLog(message, type) {
-            const logEntries = document.getElementById('logEntries');
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}-log`;
-            
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            entry.textContent = `[${timestamp}] ${message}`;
-            
-            logEntries.appendChild(entry);
-            logEntries.scrollTop = logEntries.scrollHeight;
-        }
+    const logEntries = document.getElementById('logEntries');
+    const entry = document.createElement('div'); // Fixed the error here
+    entry.className = `log-entry ${type}-log`;
+    
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    entry.textContent = `[${timestamp}] ${message}`;
+    
+    logEntries.appendChild(entry);
+    logEntries.scrollTop = logEntries.scrollHeight;
+}
 
         // Producer function
         function produce() {
