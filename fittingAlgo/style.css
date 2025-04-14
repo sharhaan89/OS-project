@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --color-teal: #3AAFA9;
+    --color-mint: #B2EBE0;
+    --color-cream: #FDFAF6;
+    --color-amber: #FF9F1C;
+    --color-dark: #2B4141;
+    --color-light: #F7F7F7;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-cream);
+    color: var(--color-dark);
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+}
+
+nav {
+    background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+    padding: 15px 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.logo:before {
+    content: "\f233";
+    font-family: "Font Awesome 5 Free";
+    margin-right: 10px;
+    font-weight: 900;
+}
+
+.logo:hover {
+    color: white;
+    text-decoration: none;
+    transform: scale(1.05);
+    transition: var(--transition);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+}
+
+nav li {
+    margin: 0 10px;
+}
+
+.button {
+    background-color: var(--color-teal);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: var(--transition);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    background-color: var(--color-amber);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+    transform: translateY(1px);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    min-width: 220px;
+    background: white;
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    z-index: 1000;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.dropdown-content a {
+    color: var(--color-dark);
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background: var(--color-mint);
+    color: var(--color-dark);
+    padding-left: 25px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 20px;
+}
+
+h1 {
+    color: var(--color-dark);
+    font-size: 2.6rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h1:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
+    border-radius: 2px;
+}
+
+.simulation-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    margin-top: 40px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-dark);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--color-mint);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.1);
+}
+
+#block-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    min-height: 100px;
+    padding: 20px;
+    background: var(--color-light);
+    border-radius: 8px;
+}
+
+.block {
+    background: var(--color-teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.block.allocated {
+    background: var(--color-amber);
+}
+
+.log {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--color-light);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.log p {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav li {
+        margin: 5px;
+    }
+
+    .container {
+        padding: 30px 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .simulation-container {
+        padding: 20px;
+    }
+}
+
+.firstfit, .bestfit, .worstfit, .nextfit {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.heading {
+    color: var(--color-dark);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.firstfit p, .bestfit p, .worstfit p, .nextfit p {
+    margin-bottom: 25px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.firstfit button, .bestfit button, .worstfit button, .nextfit button {
+    display: inline-block;
+    margin: 0 auto;
+    min-width: 200px;
+}
