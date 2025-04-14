@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process State Lifecycle Simulation</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --dark: #1e293b;
+            --light: #f8f9fa;
+            --transition-time: 0.6s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--dark);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--info), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .state-diagram {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .state-node {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(30, 41, 59, 0.9);
+            border: 3px solid transparent;
+            transition: all var(--transition-time) ease;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .state-node.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--info);
+            z-index: 100;
+        }
+
+        .node-new {
+            border-color: var(--info);
+            color: var(--info);
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+
+        .node-new.active {
+            background-color: rgba(72, 149, 239, 0.2);
+        }
+
+        .node-ready {
+            border-color: var(--success);
+            color: var(--success);
+            top: 20%;
+            left: 30%;
+        }
+
+        .node-ready.active {
+            background-color: rgba(76, 201, 240, 0.2);
+        }
+
+        .node-running {
+            border-color: var(--primary);
+            color: var(--primary);
+            top: 20%;
+            left: 70%;
+        }
+
+        .node-running.active {
+            background-color: rgba(67, 97, 238, 0.2);
+        }
+
+        .node-waiting {
+            border-color: var(--warning);
+            color: var(--warning);
+            top: 80%;
+            left: 70%;
+        }
+
+        .node-waiting.active {
+            background-color: rgba(248, 150, 30, 0.2);
+        }
+
+        .node-terminated {
+            border-color: var(--danger);
+            color: var(--danger);
+            top: 80%;
+            left: 30%;
+        }
+
+        .node-terminated.active {
+            background-color: rgba(247, 37, 133, 0.2);
+        }
+
+        .path {
+            position: absolute;
+            height: 3px;
+            background-color: #334155;
+            transform-origin: left center;
+            z-index: -1;
+        }
+
+        .path-highlight {
+            position: absolute;
+            height: 100%;
+            width: 0;
+            top: 0;
+            left: 0;
+            transition: width 0.8s ease;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--dark);
+            color: var(--light);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .process-queue {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .process-item {
+            background-color: var(--dark);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--info);
+        }
+
+        .process-item.active {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .process-id {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-state {
+            font-size: 0.9rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: rgba(30, 41, 59, 0.9);
+        }
+
+        .state-new {
+            color: var(--info);
+        }
+
+        .state-ready {
+            color: var(--success);
+        }
+
+        .state-running {
+            color: var(--primary);
+        }
+
+        .state-waiting {
+            color: var(--warning);
+        }
+
+        .state-terminated {
+            color: var(--danger);
+        }
+
+        .info-panel {
+            background-color: var(--dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .info-content {
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+
+        .process-builder {
+            background-color: var(--dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) translateX(500px);
+                opacity: 0;
+            }
+        }
+
+        .process-action {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes moveProcess {
+            0% {
+                opacity: 1;
+                transform: scale(0.8);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.2);
+            }
+        }
+
+        .state-description {
+            display: none;
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--dark);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 200;
+        }
+
+        .state-node:hover .state-description {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .state-diagram {
+                height: 600px;
+            }
+            
+            .node-new {
+                top: 10%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .node-ready {
+                top: 30%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .node-running {
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .node-waiting {
+                top: 70%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .node-terminated {
+                top: 90%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container" id="animationContainer"></div>
+    
+    <header>
+        <h1>Process State Lifecycle Simulation</h1>
+        <p class="subtitle">Interactive visualization of operating system process states and transitions</p>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="state-diagram" id="stateDiagram">
+                <div class="state-node node-new" data-state="new">
+                    New
+                    <div class="state-description">
+                        Process is being created in memory and initialized
+                    </div>
+                </div>
+                <div class="state-node node-ready" data-state="ready">
+                    Ready
+                    <div class="state-description">
+                        Process is waiting to be assigned to a processor
+                    </div>
+                </div>
+                <div class="state-node node-running" data-state="running">
+                    Running
+                    <div class="state-description">
+                        Instructions are being executed by the CPU
+                    </div>
+                </div>
+                <div class="state-node node-waiting" data-state="waiting">
+                    Waiting
+                    <div class="state-description">
+                        Process is waiting for some event to occur (I/O, resources)
+                    </div>
+                </div>
+                <div class="state-node node-terminated" data-state="terminated">
+                    Terminated
+                    <div class="state-description">
+                        Process has finished execution or was terminated
+                    </div>
+                </div>
+                
+                <!-- Paths will be created dynamically via JS -->
+            </div>
+            
+            <div class="controls">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="btnAuto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Auto Simulate
+                    </button>
+                    <button class="btn btn-info" id="btnCreateProcess">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create Process
+                    </button>
+                </div>
+                
+                <div class="process-queue" id="processQueue">
+                    <!-- Process items will be generated here -->
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-header">
+                    <div class="info-title">About Process States</div>
+                </div>
+                <div class="info-content">
+                    <p>A process in an operating system goes through various states during its lifecycle:</p>
+                    <p><strong>New:</strong> When a process is first created, it enters the 'New' state. The operating system performs initialization and allocates memory for the process.</p>
+                    <p><strong>Ready:</strong> After initialization, the process moves to the 'Ready' state and waits in the ready queue to be selected by the CPU scheduler.</p>
+                    <p><strong>Running:</strong> When the process is assigned to the CPU and is executing, it is in the 'Running' state. A process can only be in this state when it has the CPU.</p>
+                    <p><strong>Waiting:</strong> If a process needs to wait for a resource or event (such as I/O operation completion), it enters the 'Waiting' state until that event occurs.</p>
+                    <p><strong>Terminated:</strong> Once a process completes its execution or is killed, it enters the 'Terminated' state. The system reclaims all resources allocated to the process.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants
+            const STATES = {
+                NEW: 'new',
+                READY: 'ready',
+                RUNNING: 'running',
+                WAITING: 'waiting',
+                TERMINATED: 'terminated'
+            };
+
+            const STATE_COLORS = {
+                [STATES.NEW]: '#4895ef',
+                [STATES.READY]: '#4cc9f0',
+                [STATES.RUNNING]: '#4361ee',
+                [STATES.WAITING]: '#f8961e',
+                [STATES.TERMINATED]: '#f72585'
+            };
+
+            const TRANSITIONS = [
+                { from: STATES.NEW, to: STATES.READY, name: 'admit' },
+                { from: STATES.READY, to: STATES.RUNNING, name: 'dispatch' },
+                { from: STATES.RUNNING, to: STATES.READY, name: 'timeout' },
+                { from: STATES.RUNNING, to: STATES.WAITING, name: 'I/O request' },
+                { from: STATES.WAITING, to: STATES.READY, name: 'I/O complete' },
+                { from: STATES.RUNNING, to: STATES.TERMINATED, name: 'exit' }
+            ];
+
+            // Elements
+            const stateDiagram = document.getElementById('stateDiagram');
+            const btnAuto = document.getElementById('btnAuto');
+            const btnCreateProcess = document.getElementById('btnCreateProcess');
+            const processQueueEl = document.getElementById('processQueue');
+            const animationContainer = document.getElementById('animationContainer');
+
+            // State
+            let processes = [];
+            let processIdCounter = 1;
+            let isAutoSimulating = false;
+            let activeStateNode = null;
+            let pathElements = {};
+
+            // Initialize
+            function init() {
+                createBackground();
+                createPaths();
+                setupEventListeners();
+            }
+
+            // Create background particles
+            function createBackground() {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.opacity = Math.random() * 0.5;
+                    particle.style.animationDuration = `${15 + Math.random() * 10}s`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    animationContainer.appendChild(particle);
+                }
+            }
+
+            // Create paths between states
+            function createPaths() {
+                const stateNodes = {};
+                document.querySelectorAll('.state-node').forEach(node => {
+                    const state = node.getAttribute('data-state');
+                    stateNodes[state] = {
+                        element: node,
+                        rect: node.getBoundingClientRect(),
+                        center: {
+                            x: node.getBoundingClientRect().left + node.getBoundingClientRect().width / 2,
+                            y: node.getBoundingClientRect().top + node.getBoundingClientRect().height / 2
+                        }
+                    };
+                });
+
+                const diagramRect = stateDiagram.getBoundingClientRect();
+
+                TRANSITIONS.forEach(transition => {
+                    const fromNode = stateNodes[transition.from];
+                    const toNode = stateNodes[transition.to];
+                    
+                    if (!fromNode || !toNode) return;
+                    
+                    const fromX = fromNode.center.x - diagramRect.left;
+                    const fromY = fromNode.center.y - diagramRect.top;
+                    const toX = toNode.center.x - diagramRect.left;
+                    const toY = toNode.center.y - diagramRect.top;
+                    
+                    const dx = toX - fromX;
+                    const dy = toY - fromY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    const path = document.createElement('div');
+                    path.classList.add('path');
+                    path.style.width = `${distance}px`;
+                    path.style.left = `${fromX}px`;
+                    path.style.top = `${fromY}px`;
+                    path.style.transform = `rotate(${angle}deg)`;
+                    
+                    const pathHighlight = document.createElement('div');
+                    pathHighlight.classList.add('path-highlight');
+                    pathHighlight.style.backgroundColor = STATE_COLORS[transition.to];
+                    
+                    path.appendChild(pathHighlight);
+                    stateDiagram.appendChild(path);
+                    
+                    const transitionId = `${transition.from}-${transition.to}`;
+                    pathElements[transitionId] = {
+                        path,
+                        highlight: pathHighlight
+                    };
+                });
+
+                // Handle responsive layout
+                window.addEventListener('resize', () => {
+                    // Remove existing paths
+                    document.querySelectorAll('.path').forEach(el => el.remove());
+                    // Recreate paths
+                    createPaths();
+                });
+            }
+
+            // Set up event listeners
+            function setupEventListeners() {
+                btnAuto.addEventListener('click', toggleAutoSimulation);
+                btnCreateProcess.addEventListener('click', createProcess);
+                
+                document.querySelectorAll('.state-node').forEach(node => {
+                    node.addEventListener('click', () => {
+                        const state = node.getAttribute('data-state');
+                        highlightState(state);
+                    });
+                });
+            }
+
+            // Create a new process
+            function createProcess() {
+                const process = {
+                    id: processIdCounter++,
+                    state: STATES.NEW,
+                    createdAt: Date.now(),
+                    transitions: []
+                };
+                
+                processes.push(process);
+                renderProcessItem(process);
+                highlightState(STATES.NEW);
+                
+                // Auto transition to READY after a delay
+                setTimeout(() => {
+                    transitionProcess(process, STATES.READY);
+                }, 1500);
+                
+                return process;
+            }
+
+            // Render a process item in the queue
+            function renderProcessItem(process) {
+                const existingItem = document.getElementById(`process-${process.id}`);
+                
+                if (existingItem) {
+                    // Update existing
+                    const stateEl = existingItem.querySelector('.process-state');
+                    stateEl.textContent = process.state.toUpperCase();
+                    stateEl.className = `process-state state-${process.state}`;
+                    return;
+                }
+                
+                // Create new
+                const item = document.createElement('div');
+                item.classList.add('process-item');
+                item.id = `process-${process.id}`;
+                item.style.borderColor = STATE_COLORS[process.state];
+                
+                const idEl = document.createElement('div');
+                idEl.classList.add('process-id');
+                idEl.textContent = `P${process.id}`;
+                
+                const stateEl = document.createElement('div');
+                stateEl.classList.add('process-state', `state-${process.state}`);
+                stateEl.textContent = process.state.toUpperCase();
+                
+                item.appendChild(idEl);
+                item.appendChild(stateEl);
+                processQueueEl.appendChild(item);
+            }
+
+            // Transition a process to a new state
+            function transitionProcess(process, newState) {
+                if (!process || process.state === newState) return;
+                
+                const validTransition = TRANSITIONS.find(t => 
+                    t.from === process.state && t.to === newState
+                );
+                
+                if (!validTransition) {
+                    console.warn(`Invalid transition: ${process.state} -> ${newState}`);
+                    return;
+                }
+                
+                // Animate the transition
+                animateTransition(process.state, newState);
+                
+                // Update process state
+                const oldState = process.state;
+                process.state = newState;
+                process.transitions.push({
+                    from: oldState,
+                    to: newState,
+                    time: Date.now()
+                });
+                
+                // Update UI
+                renderProcessItem(process);
+                highlightState(newState);
+                
+                // Handle automatic transitions
+                if (isAutoSimulating) {
+                    handleAutoTransition(process);
+                }
+            }
+
+            // Handle automatic transitions based on current state
+            function handleAutoTransition(process) {
+                if (!process) return;
+                
+                const transitionDelay = 2000;
+                
+                switch (process.state) {
+                    case STATES.NEW:
+                        setTimeout(() => {
+                            transitionProcess(process, STATES.READY);
+                        }, transitionDelay);
+                        break;
+                        
+                    case STATES.READY:
+                        setTimeout(() => {
+                            transitionProcess(process, STATES.RUNNING);
+                        }, transitionDelay);
+                        break;
+                        
+                    case STATES.RUNNING:
+                        setTimeout(() => {
+                            // Randomly choose next state
+                            const choices = [STATES.READY, STATES.WAITING, STATES.TERMINATED];
+                            const nextState = choices[Math.floor(Math.random() * choices.length)];
+                            transitionProcess(process, nextState);
+                        }, transitionDelay);
+                        break;
+                        
+                    case STATES.WAITING:
+                        setTimeout(() => {
+                            transitionProcess(process, STATES.READY);
+                        }, transitionDelay);
+                        break;
+                        
+                    case STATES.TERMINATED:
+                        // Process is terminated, no further transitions
+                        setTimeout(() => {
+                            // Remove terminated process from queue after a delay
+                            const item = document.getElementById(`process-${process.id}`);
+                            if (item) {
+                                item.style.opacity = '0.5';
+                                setTimeout(() => {
+                                    if (item.parentNode) {
+                                        item.parentNode.removeChild(item);
+                                    }
+                                    // Filter out terminated process
+                                    processes = processes.filter(p => p.id !== process.id);
+                                }, 3000);
+                            }
+                        }, transitionDelay);
+                        break;
+                }
+            }
+
+            // Animate transition between states
+            function animateTransition(fromState, toState) {
+                const transitionId = `${fromState}-${toState}`;
+                const pathInfo = pathElements[transitionId];
+                
+                if (!pathInfo) return;
+                
+                // Create a moving dot to represent the process
+                const fromNode = document.querySelector(`.node-${fromState}`);
+                const toNode = document.querySelector(`.node-${toState}`);
+                
+                if (!fromNode || !toNode) return;
+                
+                const fromRect = fromNode.getBoundingClientRect();
+                const toRect = toNode.getBoundingClientRect();
+                const diagramRect = stateDiagram.getBoundingClientRect();
+                
+                const processAction = document.createElement('div');
+                processAction.classList.add('process-action');
+                processAction.style.backgroundColor = STATE_COLORS[toState];
+                processAction.style.left = `${fromRect.left - diagramRect.left + fromRect.width / 2}px`;
+                processAction.style.top = `${fromRect.top - diagramRect.top + fromRect.height / 2}px`;
+                stateDiagram.appendChild(processAction);
+                
+                // Highlight the path
+                pathInfo.highlight.style.width = '100%';
+                
+                // Animate the process action
+                const keyframes = [
+                    { 
+                        left: `${fromRect.left - diagramRect.left + fromRect.width / 2}px`,
+                        top: `${fromRect.top - diagramRect.top + fromRect.height / 2}px`,
+                        opacity: 1
+                    },
+                    { 
+                        left: `${toRect.left - diagramRect.left + toRect.width / 2}px`,
+                        top: `${toRect.top - diagramRect.top + toRect.height / 2}px`,
+                        opacity: 0
+                    }
+                ];
+                
+                const animation = processAction.animate(keyframes, {
+                    duration: 800,
+                    easing: 'ease-in-out',
+                    fill: 'forwards'
+                });
+                
+                animation.onfinish = () => {
+                    processAction.remove();
+                    // Reset path highlight after a delay
+                    setTimeout(() => {
+                        if (pathInfo.highlight) {
+                            pathInfo.highlight.style.width = '0';
+                        }
+                    }, 500);
+                };
+            }
+
+            // Highlight a state node
+            function highlightState(state) {
+                // Remove highlight from previous state
+                document.querySelectorAll('.state-node').forEach(node => {
+                    node.classList.remove('active');
+                });
+                
+                // Add highlight to new state
+                const stateNode = document.querySelector(`.node-${state}`);
+                if (stateNode) {
+                    stateNode.classList.add('active');
+                    activeStateNode = stateNode;
+                }
+            }
+
+            // Toggle automatic simulation
+            function toggleAutoSimulation() {
+                isAutoSimulating = !isAutoSimulating;
+                
+                if (isAutoSimulating) {
+                    btnAuto.textContent = 'Stop Simulation';
+                    btnAuto.classList.remove('btn-primary');
+                    btnAuto.classList.add('btn-danger');
+                    
+                    // Create an initial process if none exist
+                    if (processes.length === 0) {
+                        const process = createProcess();
+                        handleAutoTransition(process);
+                    } else {
+                        // Continue simulation for existing processes
+                        processes.forEach(process => {
+                            if (process.state !== STATES.TERMINATED) {
+                                handleAutoTransition(process);
+                            }
+                        });
+                    }
+                    
+                    // Create new processes periodically
+                    autoSimulationInterval = setInterval(() => {
+                        if (processes.length < 5) {
+                            const process = createProcess();
+                            handleAutoTransition(process);
+                        }
+                    }, 5000);
+                } else {
+                    btnAuto.textContent = 'Auto Simulate';
+                    btnAuto.classList.remove('btn-danger');
+                    btnAuto.classList.add('btn-primary');
+                    clearInterval(autoSimulationInterval);
+                }
+            }
+
+            // Initialize
+            init();
+        });
+    </script>
+</body>
+</html>

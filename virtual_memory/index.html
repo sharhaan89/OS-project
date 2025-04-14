@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Memory Management Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Virtual Memory Management Visualization</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <button id="nextStep">Execute Next Reference</button>
+                <button id="autoRun">Auto Run</button>
+                <button id="reset">Reset</button>
+            </div>
+            <div class="control-group">
+                <label for="pageReplacement">Page Replacement Algorithm:</label>
+                <select id="pageReplacement">
+                    <option value="fifo">FIFO</option>
+                    <option value="lru">LRU</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="referenceRate">Reference Speed:</label>
+                <input type="range" id="referenceRate" min="100" max="2000" step="100" value="500">
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span>References:</span>
+                <span id="referenceCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Page Faults:</span>
+                <span id="pageFaultCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span>TLB Hits:</span>
+                <span id="tlbHitCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span>TLB Hit Rate:</span>
+                <span id="tlbHitRate">0%</span>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="memory-section">
+                <h2>Memory Access Sequence</h2>
+                <div id="memoryAccess" class="memory-access"></div>
+                <div id="currentReference" class="current-reference">
+                    <span>Current: </span><span id="currentReferenceValue">-</span>
+                </div>
+            </div>
+
+            <div class="simulation-section">
+                <div class="tlb-section">
+                    <h2>Translation Lookaside Buffer (TLB)</h2>
+                    <div id="tlb" class="tlb"></div>
+                </div>
+
+                <div class="page-table-section">
+                    <h2>Page Table</h2>
+                    <div id="pageTable" class="page-table"></div>
+                </div>
+
+                <div class="physical-memory-section">
+                    <h2>Physical Memory (RAM)</h2>
+                    <div id="physicalMemory" class="physical-memory"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="execution-log">
+            <h2>Execution Log</h2>
+            <div id="executionLog" class="log-content"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
