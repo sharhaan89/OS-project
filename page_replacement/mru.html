@@ -201,7 +201,6 @@
         }
 
         .content {
-            display: flex;
             align-items: stretch;
             justify-content: space-between;
             gap: 40px;
@@ -324,12 +323,34 @@
         }
 
         .info-card {
+            width: 100%;
             background-color: var(--color-light);
             border-left: 4px solid var(--color-teal);
             padding: 15px;
-            margin: 25px 0;
             border-radius: 6px;
         }
+        .image-text-flex {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .image-text-flex .image-container {
+            flex: 1;
+            padding: 25px;
+            background-color: transparent;
+            justify-content: flex-start;
+        }
+
+        .image-container img {
+            max-width: 100%;
+        }
+
+        .image-text-flex .info-card {
+            flex: 1;
+            margin: 0;
+        }
+
 
         @media (max-width: 768px) {
             .content {
@@ -378,16 +399,18 @@
         <h1>Most Recently Used (MRU) Page Replacement</h1>
 
         <div class="content">
+            <div class="image-text-flex">
             <div class="image-container">
                 <img src="images/mru.png" alt="MRU Page Replacement Illustration">
             </div>
-            <div class="text-container">
+            
                 <div class="info-card">
                     <p>
                         The <b>Most Recently Used (MRU)</b> algorithm is a page replacement strategy that replaces the page that has been accessed most recently. It operates on the principle that pages that have been accessed recently are less likely to be needed again soon, making them the first candidates for replacement.
                     </p>
                 </div>
-
+            </div>
+                <div class="text-container">
                 <h3>How It Works</h3>
                 <p>
                     MRU keeps track of which pages were most recently accessed. When a page fault occurs and all frames are full, the algorithm selects the page that was most recently accessed and replaces it with the new page. This strategy assumes that the page used most recently will not be needed again in the near future.
