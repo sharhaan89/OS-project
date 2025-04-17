@@ -163,7 +163,6 @@
             color: var(--color-dark);
             padding-left: 25px;
         }
-
         .dropdown::after{
             content: '';
             position: absolute;
@@ -172,7 +171,7 @@
             bottom: -10px;
             left: 0;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -202,7 +201,6 @@
         }
 
         .content {
-            display: flex;
             align-items: stretch;
             justify-content: space-between;
             gap: 40px;
@@ -325,12 +323,34 @@
         }
 
         .info-card {
+            width: 100%;
             background-color: var(--color-light);
             border-left: 4px solid var(--color-teal);
             padding: 15px;
-            margin: 25px 0;
             border-radius: 6px;
         }
+        .image-text-flex {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .image-text-flex .image-container {
+            flex: 1;
+            padding: 25px;
+            background-color: transparent;
+            justify-content: flex-start;
+        }
+
+        .image-container img {
+            max-width: 100%;
+        }
+
+        .image-text-flex .info-card {
+            flex: 1;
+            margin: 0;
+        }
+
 
         @media (max-width: 768px) {
             .content {
@@ -379,16 +399,18 @@
         <h1>Random Page Replacement</h1>
 
         <div class="content">
+            <div class="image-text-flex">
             <div class="image-container">
                 <img src="images/random.png" alt="Random Page Replacement Illustration">
             </div>
-            <div class="text-container">
+            
                 <div class="info-card">
                     <p>
-                        The <b>Random Page Replacement (RANDOM)</b> algorithm is a page replacement strategy that selects a page at random to replace when a page fault occurs and all frames are full. It does not rely on any access history or usage patterns, instead randomly choosing which page to evict.
+                        The Random Page Replacement (RANDOM) algorithm is a page replacement strategy that selects a page at random to replace when a page fault occurs and all frames are full. It does not rely on any access history or usage patterns, instead randomly choosing which page to evict.
                     </p>
                 </div>
-
+            </div>
+                <div class="text-container">
                 <h3>How It Works</h3>
                 <p>
                     In the RANDOM algorithm, when a page fault occurs, the algorithm randomly picks one of the pages currently in memory to replace with the new page. The decision is entirely based on chance, with no consideration for which page was accessed most recently or how frequently pages have been used.
@@ -409,7 +431,6 @@
                     <li>Not efficient in cases where access patterns can be leveraged (e.g., for better performance with LRU or FIFO)</li>
                     <li>Lacks any strategy to minimize the number of page faults, often leading to a high fault rate</li>
                 </ul>
-
                 <button class="sim-button" onclick="location.href='page_replacement.html';">Try Random Simulation</button>
             </div>
         </div>

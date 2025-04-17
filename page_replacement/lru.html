@@ -163,7 +163,6 @@
             color: var(--color-dark);
             padding-left: 25px;
         }
-
         .dropdown::after{
             content: '';
             position: absolute;
@@ -202,7 +201,6 @@
         }
 
         .content {
-            display: flex;
             align-items: stretch;
             justify-content: space-between;
             gap: 40px;
@@ -325,12 +323,34 @@
         }
 
         .info-card {
+            width: 100%;
             background-color: var(--color-light);
             border-left: 4px solid var(--color-teal);
             padding: 15px;
-            margin: 25px 0;
             border-radius: 6px;
         }
+        .image-text-flex {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .image-text-flex .image-container {
+            flex: 1;
+            padding: 25px;
+            background-color: transparent;
+            justify-content: flex-start;
+        }
+
+        .image-container img {
+            max-width: 100%;
+        }
+
+        .image-text-flex .info-card {
+            flex: 1;
+            margin: 0;
+        }
+
 
         @media (max-width: 768px) {
             .content {
@@ -379,16 +399,18 @@
         <h1>Least Recently Used (LRU) Page Replacement</h1>
 
         <div class="content">
+            <div class="image-text-flex">
             <div class="image-container">
                 <img src="images/lru.png" alt="LRU Page Replacement Illustration">
             </div>
-            <div class="text-container">
+            
                 <div class="info-card">
                     <p>
                         The <b>Least Recently Used (LRU)</b> algorithm is a page replacement strategy that replaces the page that has not been accessed for the longest period of time. It operates based on the principle that pages that have not been used recently are less likely to be used in the near future.
                     </p>
                 </div>
-
+            </div>
+                <div class="text-container">
                 <h3>How It Works</h3>
                 <p>
                     LRU keeps track of when each page was last accessed. When a page fault occurs and all frames are full, the algorithm selects the page that hasn't been used for the longest time and replaces it with the new page. This approach relies on past usage patterns rather than trying to predict future page accesses.
@@ -405,12 +427,11 @@
                 <h3>Disadvantages</h3>
                 <ul class="bullet-points">
                     <li>Requires sophisticated <b>data structures</b> to track page usage history</li>
-                    <li>Demands <b>high hardware assistance</b> for efficient implementation</li>
-                    <li>Error detection mechanisms are more complex</li>
-                    <li>Implementation challenges limit practical applications</li>
-                    <li>Higher operational overhead due to timestamp tracking</li>
+                    <li>Demands <b>>high hardware assistance</b> for efficient implementation.</li>
+                    <li>Error detection mechanisms are more complex</li>       
+                    <li>Implementation challenges limit practical applications</li> 
+                    <li>Higher operational overhead due to timestamp tracking</li> 
                 </ul>
-
                 <button class="sim-button" onclick="location.href='page_replacement.html';">Try LRU Simulation</button>
             </div>
         </div>

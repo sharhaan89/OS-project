@@ -131,7 +131,6 @@
         .dropdown:hover .dropdown-content {
             display: block;
             opacity: 1;
-            animation: fadeIn 0.3s ease forwards;
         }
 
         @keyframes fadeIn {
@@ -164,7 +163,6 @@
             color: var(--color-dark);
             padding-left: 25px;
         }
-
         .dropdown::after{
             content: '';
             position: absolute;
@@ -175,15 +173,15 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 50px 20px;
         }
 
         h1 {
             color: var(--color-dark);
-            font-size: 2.8rem;
-            margin-bottom: 40px;
+            font-size: 2.6rem;
+            margin-bottom: 30px;
             font-weight: 700;
             text-align: center;
             position: relative;
@@ -196,72 +194,74 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 120px;
+            width: 100px;
             height: 4px;
             background: linear-gradient(90deg, var(--color-teal), var(--color-mint));
             border-radius: 2px;
         }
 
-        /* Hero section with larger image */
-        .hero-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 600px;
-            border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-            transition: transform 0.4s ease;
-            border: 5px solid white;
-            margin-bottom: 30px;
-        }
-
-        .hero-image:hover {
-            transform: scale(1.03);
-        }
-
-        .intro-card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px 30px;
+        .content {
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 40px;
+            background: white;
+            border-radius: 16px;
             box-shadow: var(--shadow);
-            max-width: 800px;
-            text-align: center;
-            margin: 0 auto;
-            border-left: 5px solid var(--color-teal);
-            transform: translateY(-30px);
+            overflow: hidden;
+            margin-top: 40px;
         }
 
-        .intro-card p {
-            font-size: 18px;
-            margin-bottom: 0;
-        }
-
-        /* How it works section */
-        .how-it-works {
-            background-color: white;
-            border-radius: 12px;
+        .image-container {
+            flex: 1;
+            position: relative;
+            min-height: 100%;
+            background-color: var(--color-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 30px;
-            box-shadow: var(--shadow);
-            margin: 40px 0;
-            border-top: 4px solid var(--color-teal);
         }
 
-        .how-it-works h3 {
-            color: var(--color-teal);
-            margin-top: 0;
+        .image-container img {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .text-container {
+            flex: 1.5;
+            padding: 40px;
+            text-align: left;
+        }
+
+        p {
             margin-bottom: 20px;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        b {
+            color: var(--color-teal);
             font-weight: 600;
-            font-size: 1.6rem;
+        }
+
+        h3 {
+            color: var(--color-teal);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
         }
 
-        .how-it-works h3:before {
+        h3:before {
             content: "";
             display: inline-block;
             width: 15px;
@@ -271,64 +271,10 @@
             border-radius: 50%;
         }
 
-        .how-it-works p {
-            font-size: 17px;
-            line-height: 1.8;
-        }
-
-        /* Content cards */
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .content-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .content-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            align-items: center;
-        }
-
-        .card-header h3 {
-            margin: 0;
-            color: white;
-            font-size: 1.4rem;
-        }
-
-        .card-header h3:before {
-            content: "";
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background-color: var(--color-amber);
-            margin-right: 12px;
-            border-radius: 50%;
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
         .bullet-points {
             list-style: none;
-            padding-left: 5px;
-            margin-bottom: 0;
+            padding-left: 15px;
+            margin-bottom: 25px;
         }
 
         .bullet-points li {
@@ -347,41 +293,15 @@
             color: var(--color-amber);
         }
 
-        .bullet-points li:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Process steps */
-        .process-steps {
-            background-color: var(--color-light);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .process-steps .bullet-points li {
-            margin-bottom: 15px;
-        }
-
-        .process-steps .bullet-points li:before {
-            content: "\f111";
-            font-size: 10px;
-        }
-
-        /* Call to action */
-        .cta-container {
-            text-align: center;
-            margin-top: 50px;
-        }
-
         .sim-button {
-            padding: 14px 28px;
+            margin-top: 20px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, var(--color-teal), #2E8B99);
             border: none;
             color: white;
             border-radius: 8px;
             font-weight: 500;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: var(--transition);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -393,7 +313,7 @@
             content: "\f04b";
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
-            margin-right: 12px;
+            margin-right: 10px;
         }
 
         .sim-button:hover {
@@ -402,44 +322,52 @@
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
         }
 
-        b {
-            color: var(--color-teal);
-            font-weight: 600;
+        .info-card {
+            width: 100%;
+            background-color: var(--color-light);
+            border-left: 4px solid var(--color-teal);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .image-text-flex {
+            display: flex;
+            align-items: center;
+            padding: 25px;
         }
 
-        footer {
-            background: var(--color-dark); 
-            color: white; 
-            text-align: center; 
-            padding: 25px 0; 
-            margin-top: 70px;
+        .image-text-flex .image-container {
+            flex: 1;
+            padding: 25px;
+            background-color: transparent;
+            justify-content: flex-start;
         }
 
-        footer p {
+        .image-container img {
+            max-width: 100%;
+        }
+
+        .image-text-flex .info-card {
+            flex: 1;
             margin: 0;
-            font-size: 16px;
         }
+
 
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 15px;
+            .content {
+                flex-direction: column;
+            }
+            
+            .image-container {
+                padding: 20px;
+                min-height: 200px;
+            }
+            
+            .text-container {
+                padding: 30px 20px;
             }
             
             h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero-image {
-                max-width: 100%;
-            }
-            
-            .intro-card {
-                padding: 20px;
-                transform: translateY(-20px);
-            }
-            
-            .content-grid {
-                grid-template-columns: 1fr;
+                font-size: 2rem;
             }
         }
     </style>
@@ -470,73 +398,53 @@
     <div class="container">
         <h1>Second Chance (Clock) Page Replacement</h1>
 
-        <div class="hero-section">
-            <img src="images/second_chance.jpg" alt="Second Chance Page Replacement Illustration" class="hero-image">
-            
-            <div class="intro-card">
-                <p>
-                    The <b>Second Chance</b> algorithm (also known as the Clock algorithm) is an enhancement of the FIFO page replacement strategy that takes page usage into account. It gives pages that have been recently accessed a "second chance" before being replaced, improving performance over basic FIFO.
-                </p>
+        <div class="content">
+            <div class="image-text-flex">
+            <div class="image-container">
+                <img src="images/second_chance.jpg" alt="Second chance Page Replacement Illustration">
             </div>
-        </div>
-
-        <div class="how-it-works">
-            <h3><i class="fas fa-cogs"></i> How It Works</h3>
-            <p>
-                Second Chance maintains a circular queue of pages (like the face of a clock) with a pointer to the oldest page. Each page has a reference bit (initially set to 0) that is set to 1 when the page is accessed. When a page fault occurs:
-            </p>
-            <div class="process-steps">
-                <ul class="bullet-points">
+            
+                <div class="info-card">
+                    <p>
+                        The Second Chance algorithm (also known as the Clock algorithm) is an enhancement of the FIFO page replacement strategy that takes page usage into account. It gives pages that have been recently accessed a "second chance" before being replaced, improving performance over basic FIFO.
+                    </p>
+                </div>
+            </div>
+                <div class="text-container">
+                <h3>How It Works</h3>
+                <p>
+                    Second Chance maintains a circular queue of pages (like the face of a clock) with a pointer to the oldest page. Each page has a reference bit (initially set to 0) that is set to 1 when the page is accessed. When a page fault occurs:
                     <li>The algorithm examines the reference bit of the oldest page (where the pointer points)</li>
                     <li>If the reference bit is 0, the page is replaced</li>
                     <li>If the reference bit is 1, the algorithm gives the page a "second chance" by setting its reference bit to 0 and moving to the next page</li>
                     <li>This process continues until a page with a reference bit of 0 is found</li>
+                    <li>The pointer moves in a circular manner around the queue, resembling the motion of a clock hand, which is why it's also called the Clock algorithm.</li>
+                </p>
+
+                <h3>Advantages</h3>
+                <ul class="bullet-points">
+                    <li>Provides better performance than pure FIFO by considering page usage</li>
+                    <li>Relatively simple to implement with only minimal overhead beyond FIFO</li>
+                    <li>Prevents frequently used pages from being replaced too soon</li>
+                    <li>More efficient than LRU but with less overhead</li>
+                    <li>Does not require sorting or complex data structures</li>
                 </ul>
-            </div>
-            <p>
-                The pointer moves in a circular manner around the queue, resembling the motion of a clock hand, which is why it's also called the Clock algorithm.
-            </p>
-        </div>
 
-        <div class="content-grid">
-            <div class="content-card">
-                <div class="card-header">
-                    <h3>Advantages</h3>
-                </div>
-                <div class="card-body">
-                    <ul class="bullet-points">
-                        <li>Provides better performance than pure FIFO by considering page usage</li>
-                        <li>Relatively <b>simple to implement</b> with only minimal overhead beyond FIFO</li>
-                        <li>Prevents frequently used pages from being replaced too soon</li>
-                        <li>More efficient than LRU but with less overhead</li>
-                        <li>Does not require sorting or complex data structures</li>
-                    </ul>
-                </div>
+                <h3>Disadvantages</h3>
+                <ul class="bullet-points">
+                    <li>Still partially based on FIFO, so it can suffer from some of the same issues</li>
+                    <li>Only considers whether a page has been used, not how frequently or recently</li>
+                    <li>May still be <b>susceptible to Belady's Anomaly</b> in some cases</li>
+                    <li>Less effective than more complex algorithms like LRU for certain workloads</li>
+                    <li>Requires hardware support for reference bits to be most effective</li>
+                </ul>
+                <button class="sim-button" onclick="location.href='page_replacement.html';">Try Second Chance Simulation</button>
             </div>
-
-            <div class="content-card">
-                <div class="card-header">
-                    <h3>Disadvantages</h3>
-                </div>
-                <div class="card-body">
-                    <ul class="bullet-points">
-                        <li>Still partially based on FIFO, so it can suffer from some of the same issues</li>
-                        <li>Only considers whether a page has been used, not how frequently or recently</li>
-                        <li>May still be <b>susceptible to Belady's Anomaly</b> in some cases</li>
-                        <li>Less effective than more complex algorithms like LRU for certain workloads</li>
-                        <li>Requires hardware support for reference bits to be most effective</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-container">
-            <button class="sim-button" onclick="location.href='page_replacement.html';">Try Second Chance Simulation</button>
         </div>
     </div>
 
-    <footer>
-        <p>© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
+    <footer style="background: var(--color-dark); color: white; text-align: center; padding: 20px 0; margin-top: 50px;">
+        <p style="margin: 0;">© 2025 OS Visualizer | Educational Tool for Operating System Concepts</p>
     </footer>
 </body>
 </html>

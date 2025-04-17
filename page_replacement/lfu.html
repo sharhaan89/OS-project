@@ -163,7 +163,6 @@
             color: var(--color-dark);
             padding-left: 25px;
         }
-
         .dropdown::after{
             content: '';
             position: absolute;
@@ -202,7 +201,6 @@
         }
 
         .content {
-            display: flex;
             align-items: stretch;
             justify-content: space-between;
             gap: 40px;
@@ -325,12 +323,34 @@
         }
 
         .info-card {
+            width: 100%;
             background-color: var(--color-light);
             border-left: 4px solid var(--color-teal);
             padding: 15px;
-            margin: 25px 0;
             border-radius: 6px;
         }
+        .image-text-flex {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .image-text-flex .image-container {
+            flex: 1;
+            padding: 25px;
+            background-color: transparent;
+            justify-content: flex-start;
+        }
+
+        .image-container img {
+            max-width: 100%;
+        }
+
+        .image-text-flex .info-card {
+            flex: 1;
+            margin: 0;
+        }
+
 
         @media (max-width: 768px) {
             .content {
@@ -379,16 +399,18 @@
         <h1>Least Frequently Used (LFU) Page Replacement</h1>
 
         <div class="content">
+            <div class="image-text-flex">
             <div class="image-container">
-                <img src="images/lru.png" alt="LFU Page Replacement Illustration">
+                <img src="images/lfu.png" alt="LFU Page Replacement Illustration">
             </div>
-            <div class="text-container">
+            
                 <div class="info-card">
                     <p>
-                        The <b>Least Frequently Used (LFU)</b> is a page replacement strategy that selects the page with the least number of accesses for replacement. It operates under the assumption that pages with the fewest accesses in the past are least likely to be accessed in the future.
+                        The Least Frequently Used (LFU) is a page replacement strategy that selects the page with the least number of accesses for replacement. It operates under the assumption that pages with the fewest accesses in the past are least likely to be accessed in the future.
                     </p>
                 </div>
-
+            </div>
+                <div class="text-container">
                 <h3>How It Works</h3>
                 <p>
                     LFU maintains a count of how often each page is accessed. When a page fault occurs and all frames are full, LFU selects the page with the lowest access count for replacement. In case of ties (pages with the same access count), it may use additional criteria like FIFO (First In, First Out).
@@ -397,7 +419,7 @@
                 <h3>Advantages</h3>
                 <ul class="bullet-points">
                     <li>Effective in environments where some pages are repeatedly accessed while others are not.</li>
-                    <li>Avoids the problem of replacing frequently used pages prematurely.</li>
+                    <li>Avoids the problem of replacing frequently used pages prematurely.</b></li>
                     <li>Can adapt well to changing access patterns over time.</li>
                 </ul>
 
@@ -405,9 +427,8 @@
                 <ul class="bullet-points">
                     <li>Requires frequent updating of access counts for each page, which adds overhead.</li>
                     <li>May struggle with sudden changes in access patterns or bursty access behaviors.</li>
-                    <li>Implementation complexity increases with the need for accurate access counting and management.</li>                 
+                    <li>Implementation complexity increases with the need for accurate access counting and management.</li>       
                 </ul>
-
                 <button class="sim-button" onclick="location.href='page_replacement.html';">Try LFU Simulation</button>
             </div>
         </div>
