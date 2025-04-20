@@ -316,9 +316,8 @@
             align-items: center;
         }
         .sim-button i {
-    color: inherit; /* Inherit the color from the button */
-}
-
+            color: inherit; /* Inherit the color from the button */
+        }
 
         .sim-button:before {
             content: "\f04b";
@@ -342,6 +341,114 @@
             border-radius: 6px;
         }
 
+        /* Improved Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 30px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            background: linear-gradient(135deg, var(--color-teal), #2E8B99);
+            height: auto;
+            min-height: 200px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            padding: 25px 15px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none !important; /* Force remove underline */
+            color: white !important; /* Force text color */
+        }
+
+        /* Make sure visited links have no underline either */
+        .grid-item:visited, 
+        .grid-item:hover, 
+        .grid-item:active,
+        .grid-item:link {
+            text-decoration: none !important;
+            color: white !important;
+        }
+
+        .grid-item:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item:hover:before {
+            transform: translateX(0);
+        }
+
+        .grid-item h2 {
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .grid-item h2:before {
+            content: "\f15c";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 30px;
+            display: block;
+            color: var(--color-amber);
+            background: rgba(255, 255, 255, 0.15);
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-7px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--color-amber), #F57C00);
+            text-decoration: none !important; /* Ensure no underline on hover */
+        }
+
+        .grid-item:hover h2:before {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(360deg);
+        }
+
+        /* Custom icons for each algorithm */
+        .grid-item:nth-child(1) h2:before { content: "\f15b"; } /* Demand Paging */
+        .grid-item:nth-child(2) h2:before { content: "\f049"; } /* FIFO */
+        .grid-item:nth-child(3) h2:before { content: "\f05b"; } /* Optimal */
+        .grid-item:nth-child(4) h2:before { content: "\f017"; } /* LRU */
+        .grid-item:nth-child(5) h2:before { content: "\f055"; } /* MRU */
+        .grid-item:nth-child(6) h2:before { content: "\f201"; } /* LFU */
+        .grid-item:nth-child(7) h2:before { content: "\f074"; } /* Random */
+        .grid-item:nth-child(8) h2:before { content: "\f2ea"; } /* Second-Chance */
+
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -359,45 +466,17 @@
             h1 {
                 font-size: 2rem;
             }
-        }
-        /* Grid Layout */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            justify-items: center;
-            padding-top: 20px;
-        }
-
-        .grid-item {
-            background: var(--color-teal);  /* Changed to teal */
-            height: 275px;
-            width: 200px;
-            border-radius: 15px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .grid-item h2 a {
-            color: white;  /* Text color changed to white */
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .grid-item:hover {
-            background: var(--color-amber);
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            
+            .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 20px 10px;
+            }
+            
+            .grid-item {
+                min-height: 180px;
+                padding: 20px 10px;
+            }
         }
     </style>
 </head>
@@ -430,41 +509,39 @@
         <div class="content">
             <!-- Paragraph before the grid -->
             <p>Page replacement algorithms are techniques used in operating systems to manage memory efficiently when the physical memory is full. When a new page needs to be loaded into physical memory, and there is no free space, these algorithms determine which existing page to replace.</p>
-            <p>If no page frame is free, the virtual memory manager performs a page replacement operation to replace one of the pages currently in memory with the page whose reference caused the page fault. It is performed as follows: The virtual memory manager uses a page replacement algorithm to select one of the pages currently in memory for replacement, accesses the page table entry of the selected page to mark it as “not present” in memory, and initiates a page-out operation for it if the modified bit of its page table entry indicates that it is a dirty page.</p>
+            <p>If no page frame is free, the virtual memory manager performs a page replacement operation to replace one of the pages currently in memory with the page whose reference caused the page fault. It is performed as follows: The virtual memory manager uses a page replacement algorithm to select one of the pages currently in memory for replacement, accesses the page table entry of the selected page to mark it as "not present" in memory, and initiates a page-out operation for it if the modified bit of its page table entry indicates that it is a dirty page.</p>
             
-            <!-- Grid Container -->
+            <!-- Updated Grid Container with clickable cards -->
             <div class="grid-container">
                 <!-- First Row -->
-                <div class="grid-item">
-                    <h2><a href="demand.html">Demand Paging</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="fifo.html">FIFO</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="optimal.html">Optimal</a></h2>
-                </div>
-    
+                <a href="demand.html" class="grid-item">
+                    <h2>Demand Paging</h2>
+                </a>
+                <a href="fifo.html" class="grid-item">
+                    <h2>FIFO</h2>
+                </a>
+                <a href="optimal.html" class="grid-item">
+                    <h2>Optimal</h2>
+                </a>
+        
                 <!-- Second Row -->
-                <div class="grid-item">
-                    <h2><a href="lru.html">LRU</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="mru.html">MRU</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="lfu.html">LFU</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="mfu.html">MFU</a></h2>
-                </div>
-                <div class="grid-item">
-                    <h2><a href="random.html">Random</a></h2>
-                </div>
-
-                <div class="grid-item">
-                    <h2><a href="second_chance.html">Second-Chance (Modified FIFO)</a></h2>
-                </div>
+                <a href="lru.html" class="grid-item">
+                    <h2>LRU</h2>
+                </a>
+                <a href="mru.html" class="grid-item">
+                    <h2>MRU</h2>
+                </a>
+                <a href="lfu.html" class="grid-item">
+                    <h2>LFU</h2>
+                </a>
+        
+                <a href="random.html" class="grid-item">
+                    <h2>Random</h2>
+                </a>
+        
+                <a href="second_chance.html" class="grid-item">
+                    <h2>Second-Chance<br>(Modified FIFO)</h2>
+                </a>
             </div>
         </div>
     </div>
@@ -480,6 +557,3 @@
     </footer>
 </body>
 </html>
-    
-
-

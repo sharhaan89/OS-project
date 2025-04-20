@@ -94,16 +94,6 @@ function attachEventListeners() {
 
 
     resetButton.addEventListener('click', resetApplication);
-
-
-    backButton.addEventListener('click', function() {
-        alert('This would navigate back to the home page in a multi-page application.');
-    });
-
-
-    osConceptsButton.addEventListener('click', function() {
-        alert('This would open the OS Concepts menu in a full application.');
-    });
 }
 
 
