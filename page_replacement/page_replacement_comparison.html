@@ -226,10 +226,9 @@
         }  
         .button-container {
             display: flex;
-            flex-direction: column; /* Stack buttons vertically */
- /* Adds space between buttons */
-            width: 200px; /* Make sure the container spans the full width */
-            align-items: center; /* Center the buttons horizontally */
+            flex-direction: column; 
+            width: 200px; 
+            align-items: center; 
         }
         .sim-button {
             margin-top: 20px;
@@ -976,11 +975,8 @@
                     let found = false;
                     let k = 0;
                     currentTime++;
-
-                    // Update frequency
                     pageFrequency.set(page, (pageFrequency.get(page) || 0) + 1);
 
-                    // Check if HIT
                     for (let j = 0; j < numberOfFrames; j++) {
                         if (frames[j] === page) {
                             pageHits++;
@@ -989,7 +985,6 @@
                         }
                     }
 
-                    // MISS handling
                     if (!found) {
                         pageFaults++;
 
@@ -1031,7 +1026,6 @@
                         }
                     }
 
-                    // Insert row for current state
                     row6 = table6.insertRow((count++) + 1);
                     cell6 = row6.insertCell(k++);
                     cell6.innerHTML = page;

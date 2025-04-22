@@ -296,9 +296,9 @@
         }
         .button-container {
             display: flex;
-            justify-content: center;  /* Centers the buttons horizontally */
-            gap: 20px;  /* Adds space between the buttons */
-            margin-top: 30px;  /* Adds space at the top */
+            justify-content: center;  
+            gap: 20px;  
+            margin-top: 30px;  
         }
         .sim-button {
             margin-top: 20px;
@@ -316,7 +316,7 @@
             align-items: center;
         }
         .sim-button i {
-            color: inherit; /* Inherit the color from the button */
+            color: inherit; 
         }
 
         .sim-button:before {
@@ -341,7 +341,6 @@
             border-radius: 6px;
         }
 
-        /* Improved Grid Layout */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -369,11 +368,10 @@
             padding: 25px 15px;
             position: relative;
             overflow: hidden;
-            text-decoration: none !important; /* Force remove underline */
-            color: white !important; /* Force text color */
+            text-decoration: none !important; 
+            color: white !important;
         }
 
-        /* Make sure visited links have no underline either */
         .grid-item:visited, 
         .grid-item:hover, 
         .grid-item:active,
@@ -431,7 +429,7 @@
             transform: translateY(-7px) scale(1.03);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             background: linear-gradient(135deg, var(--color-amber), #F57C00);
-            text-decoration: none !important; /* Ensure no underline on hover */
+            text-decoration: none !important; 
         }
 
         .grid-item:hover h2:before {
@@ -439,7 +437,6 @@
             transform: rotate(360deg);
         }
 
-        /* Custom icons for each algorithm */
         .grid-item:nth-child(1) h2:before { content: "\f15b"; } /* Demand Paging */
         .grid-item:nth-child(2) h2:before { content: "\f049"; } /* FIFO */
         .grid-item:nth-child(3) h2:before { content: "\f05b"; } /* Optimal */
@@ -507,11 +504,8 @@
         <h1>Page Replacement Algorithms</h1>
     
         <div class="content">
-            <!-- Paragraph before the grid -->
             <p>Page replacement algorithms are techniques used in operating systems to manage memory efficiently when the physical memory is full. When a new page needs to be loaded into physical memory, and there is no free space, these algorithms determine which existing page to replace.</p>
             <p>If no page frame is free, the virtual memory manager performs a page replacement operation to replace one of the pages currently in memory with the page whose reference caused the page fault. It is performed as follows: The virtual memory manager uses a page replacement algorithm to select one of the pages currently in memory for replacement, accesses the page table entry of the selected page to mark it as "not present" in memory, and initiates a page-out operation for it if the modified bit of its page table entry indicates that it is a dirty page.</p>
-            
-            <!-- Updated Grid Container with clickable cards -->
             <div class="grid-container">
                 <!-- First Row -->
                 <a href="demand.html" class="grid-item">
@@ -535,10 +529,10 @@
                     <h2>LFU</h2>
                 </a>
         
+                <!-- Third Row -->
                 <a href="random.html" class="grid-item">
                     <h2>Random</h2>
                 </a>
-        
                 <a href="second_chance.html" class="grid-item">
                     <h2>Second-Chance<br>(Modified FIFO)</h2>
                 </a>
