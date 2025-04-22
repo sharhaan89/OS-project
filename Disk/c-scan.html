@@ -496,7 +496,6 @@
             line-height: 1.6;
         }
         
-        /* Disk Visualization */
         .disk-visualization {
             margin-top: 30px;
             background: #f7f7f7;
@@ -585,7 +584,6 @@
             color: var(--color-amber);
         }
         
-        /* Animations */
         @keyframes pulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(255,82,82,0.7);
@@ -934,20 +932,19 @@
                         let autoPlayInterval = null;
                         
                         simulateBtn.addEventListener('click', function() {
-                            // Get input values
+     
                             const cylinderSequenceInput = document.getElementById('cylinderSequence').value;
                             const initialCylinder = parseInt(document.getElementById('initialCylinder').value);
                             const lastCylinder = parseInt(document.getElementById('lastCylinder').value);
                             const direction = document.querySelector('input[name="direction"]:checked').value;
                             
-                            // Validate inputs
                             if(!cylinderSequenceInput || isNaN(initialCylinder) || isNaN(lastCylinder)) {
                                 alert('Please fill in all fields with valid values');
                                 return;
                             }
             
                             const cylinderSequence = cylinderSequenceInput.split(',').map(num => parseInt(num.trim()));
-                            originalRequests = [...cylinderSequence]; // Store original request sequence
+                            originalRequests = [...cylinderSequence];
                             
                             for(let cylinder of cylinderSequence) {
                                 if(isNaN(cylinder) || cylinder < 0 || cylinder > lastCylinder) {
@@ -956,10 +953,8 @@
                                 }
                             }
                             
-                            // Calculate C-SCAN sequence
                             seekSequence = calculateCSCANSequence(initialCylinder, cylinderSequence, lastCylinder, direction);
-                            
-                            // Calculate total and average seek time
+
                             let totalSeekTime = 0;
                             movements = [];
                             
